@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/plepe/wikipedia-list-extractor",
   "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "argparse": "^1.0.10"
+  }
 }
