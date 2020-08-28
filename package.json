@@ -6,9 +6,15 @@
   "repository": "https://github.com/plepe/wikipedia-list-extractor",
   "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
   "license": "MIT",
+  "scripts": {
+    "lint": "standard --fix src/*.js"
+  },
   "dependencies": {
     "argparse": "^1.0.10",
     "jsdom": "^16.4.0",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "standard": "^14.3.4"
   }
 }

@@ -1,4 +1,4 @@
-const jsdom = require("jsdom")
+const jsdom = require('jsdom')
 const { JSDOM } = jsdom
 
 const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
@@ -16,12 +16,12 @@ class MediawikiListExtractor {
 
   get (ids, options, callback) {
     if (!Array.isArray(ids)) {
-      ids = [ ids ]
+      ids = [ids]
     }
 
-    let source = this.def.sources[0]
+    const source = this.def.sources[0]
 
-    let search = 'hastemplate:"' + source.template + '" insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ intitle:/' + source.pageTitleMatch + '/'
+    const search = 'hastemplate:"' + source.template + '" insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ intitle:/' + source.pageTitleMatch + '/'
 
     global.fetch('https://' + source.source + '/w/index.php?search=' + encodeURIComponent(search))
       .then(res => res.text())
@@ -33,7 +33,7 @@ class MediawikiListExtractor {
           return callback(null, [])
         }
 
-        let page = articles[0].getAttribute('title')
+        const page = articles[0].getAttribute('title')
         this.loadPage(
           {
             title: page,
@@ -41,16 +41,18 @@ class MediawikiListExtractor {
           },
           options,
           (err, body) => {
+            if (err) { return callback(err) }
+
             const dom = new JSDOM(body)
             let result = []
 
-            let remaining = ids.filter(id => {
+            const remaining = ids.filter(id => {
               const tr = dom.window.document.getElementById(source.renderedTableRowPrefix + id)
               if (!tr) {
                 return true
               }
 
-              let data = {}
+              const data = {}
 
               Object.keys(source.renderedFields).forEach(fieldId => {
                 const fieldDef = source.renderedFields[fieldId]
@@ -59,17 +61,14 @@ class MediawikiListExtractor {
 
                 let value
 
-                switch (fieldDef.type) {
-                  case 'image':
-                    let imgs = td.getElementsByTagName('img')
-                    imgs = Array.from(imgs).filter(img => img.width > 64 && img.height > 64)
-                    if (imgs.length) {
-                      value = wikipediaGetImageProperties(imgs[0])
-                    }
-                    break
-                  case 'html':
-                  default:
-                    value = td.innerHTML
+                if (fieldDef.type === 'image') {
+                  let imgs = td.getElementsByTagName('img')
+                  imgs = Array.from(imgs).filter(img => img.width > 64 && img.height > 64)
+                  if (imgs.length) {
+                    value = wikipediaGetImageProperties(imgs[0])
+                  }
+                } else {
+                  value = td.innerHTML
                 }
 
                 data[fieldId] = value
