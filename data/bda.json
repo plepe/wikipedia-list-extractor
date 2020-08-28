@@ -1,0 +1,27 @@
+{
+    "openstreetmap-tag": "ref:at:bda",
+    "title": {
+        "de": "Denkmalgeschützte Objekte in Österreich"
+    },
+    "organisation": {
+        "de": "Bundesdenkmalamt Österreich"
+    },
+    "sources": {
+        "de.wikipedia.org": {
+            "template": "Denkmalliste Österreich Tabellenzeile",
+            "templateIdField": "ObjektID",
+            "pageTitleMatch": "Liste der denkmalgeschützten Objekte in",
+            "renderedTableRowPrefix": "objektid-",
+            "renderedFields": {
+                "0": {
+                    "id": "image",
+                    "type": "image"
+                },
+                "4": {
+                    "id": "description",
+                    "type": "html"
+                }
+            }
+        }
+    }
+}
