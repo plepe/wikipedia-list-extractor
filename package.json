@@ -1,0 +1,9 @@
+{
+  "name": "wikipedia-list-extractor",
+  "description": "Read entries from Wikipedia lists",
+  "version": "0.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/plepe/wikipedia-list-extractor",
+  "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
+  "license": "MIT"
+}
