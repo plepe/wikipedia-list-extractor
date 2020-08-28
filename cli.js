@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 const fs = require('fs')
+global.fetch = require('node-fetch')
+
+const MediawikiListExtractor = require('./src/MediawikiListExtractor.js')
 
 const ArgumentParser = require('argparse').ArgumentParser
 const parser = new ArgumentParser({
@@ -24,5 +27,5 @@ def = JSON.parse(def)
 
 let list = new MediawikiListExtractor(def)
 list.get(args.id, {}, (err, result) => {
-  console.log(result)
+  console.log(JSON.stringify(result, null, '    '))
 })

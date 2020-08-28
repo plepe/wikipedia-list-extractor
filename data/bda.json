@@ -6,22 +6,24 @@
     "organisation": {
         "de": "Bundesdenkmalamt Österreich"
     },
-    "sources": {
-        "de.wikipedia.org": {
+    "sources": [
+        {
+            "language": "de",
+            "source": "de.wikipedia.org",
             "template": "Denkmalliste Österreich Tabellenzeile",
             "templateIdField": "ObjektID",
             "pageTitleMatch": "Liste der denkmalgeschützten Objekte in",
             "renderedTableRowPrefix": "objektid-",
             "renderedFields": {
-                "0": {
-                    "id": "image",
+                "image": {
+                    "column": "0",
                     "type": "image"
                 },
-                "4": {
-                    "id": "description",
+                "description": {
+                    "column": "4",
                     "type": "html"
                 }
             }
         }
-    }
+    ]
 }

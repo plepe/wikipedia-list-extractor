@@ -1,7 +1,7 @@
 module.exports = function wikipediaGetImageProperties (img) { 
-  let m = img.src.match(/^https?:\/\/upload.wikimedia.org\/wikipedia\/commons\/thumb\/\w+\/\w+\/([^/]+)/)
+  let m = img.src.match(/^(https?:)?\/\/upload.wikimedia.org\/wikipedia\/commons\/thumb\/\w+\/\w+\/([^/]+)/)
   if (m) {
-    let file = decodeURIComponent(m[1]).replace(/_/g, ' ')
+    let file = decodeURIComponent(m[2]).replace(/_/g, ' ')
 
     return {
       id: file,
