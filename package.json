@@ -7,7 +7,9 @@
   "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
   "license": "MIT",
   "scripts": {
-    "lint": "standard --fix src/*.js"
+    "build": "browserify src/app.js -o dist/app.js",
+    "lint": "standard --fix src/*.js",
+    "watch": "watchify --debug src/app.js -o dist/app.js -v"
   },
   "dependencies": {
     "argparse": "^1.0.10",
@@ -15,6 +17,8 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "standard": "^14.3.4"
+    "browserify": "^16.5.2",
+    "standard": "^14.3.4",
+    "watchify": "^3.11.1"
   }
 }
