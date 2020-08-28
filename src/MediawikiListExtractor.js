@@ -1,6 +1,3 @@
-const jsdom = require('jsdom')
-const { JSDOM } = jsdom
-
 const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
 
 class MediawikiListExtractor {
@@ -26,8 +23,9 @@ class MediawikiListExtractor {
     global.fetch('https://' + source.source + '/w/index.php?search=' + encodeURIComponent(search))
       .then(res => res.text())
       .then(body => {
-        const dom = new JSDOM(body)
-        const articles = dom.window.document.querySelectorAll('li.mw-search-result > div > a')
+        const dom = global.document.createElement('div')
+        dom.innerHTML = body
+        const articles = dom.querySelectorAll('li.mw-search-result > div > a')
 
         if (!articles.length) {
           return callback(null, [])
@@ -43,11 +41,12 @@ class MediawikiListExtractor {
           (err, body) => {
             if (err) { return callback(err) }
 
-            const dom = new JSDOM(body)
+            const dom = global.document.createElement('div')
+            dom.innerHTML = body
             let result = []
 
             const remaining = ids.filter(id => {
-              const tr = dom.window.document.getElementById(source.renderedTableRowPrefix + id)
+              const tr = dom.querySelector('#' + source.renderedTableRowPrefix + id)
               if (!tr) {
                 return true
               }
