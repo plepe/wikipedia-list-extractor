@@ -6,7 +6,12 @@ class MediawikiListExtractor {
   }
 
   loadPage (param, options, callback) {
-    global.fetch('https://' + param.source + '/wiki/' + encodeURIComponent(param.title))
+    let url = 'https://' + param.source + '/wiki/' + encodeURIComponent(param.title)
+    if (options.proxy) {
+      url = options.proxy + 'source=' + encodeURIComponent(param.source) + '&page=' + encodeURIComponent(param.title)
+    }
+
+    global.fetch(url)
       .then(res => res.text())
       .then(body => callback(null, body))
   }
@@ -20,7 +25,12 @@ class MediawikiListExtractor {
 
     const search = 'hastemplate:"' + source.template + '" insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ intitle:/' + source.pageTitleMatch + '/'
 
-    global.fetch('https://' + source.source + '/w/index.php?search=' + encodeURIComponent(search))
+    let url = 'https://' + source.source + '/w/index.php?search=' + encodeURIComponent(search)
+    if (options.proxy) {
+      url = options.proxy + 'source=' + encodeURIComponent(source.source) + '&search=' + encodeURIComponent(search)
+    }
+
+    global.fetch(url)
       .then(res => res.text())
       .then(body => {
         const dom = global.document.createElement('div')
