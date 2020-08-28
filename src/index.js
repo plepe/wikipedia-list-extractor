@@ -1,1 +1,1 @@
-const wikipediaListExtractor = require('./wikipedia-list-extractor.js')
+module.exports = require('./MediawikiListExtractor.js')
