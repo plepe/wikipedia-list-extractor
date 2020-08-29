@@ -31,7 +31,8 @@ Wikipedia List Extractor uses a few modules (node-fetch, jsdom) as indirect depe
 As Wikipedia does not allow requests from a web browser, when they do not originate from a wikipedia page, we have to use a proxy. The URL of the proxy has to be supplied with the options, when loading MediawikiListExtractor:
 
 ```js
-new MediawikiListExtractor('INT-UNESCO', {
+// def is the file data/INT-UNESCO.json as Javascript Object
+new MediawikiListExtractor('INT-UNESCO', def, {
   proxy: 'proxy/?'
 })
 ```

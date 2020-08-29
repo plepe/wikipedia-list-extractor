@@ -28,7 +28,7 @@ let def = fs.readFileSync('data/' + listId + '.json')
 def = JSON.parse(def)
 
 const list = new MediawikiListExtractor(listId, def)
-list.get(args.id, {}, (err, result) => {
+list.get(args.id, (err, result) => {
   if (err) { return console.error(err) }
 
   console.log(JSON.stringify(result, null, '    '))

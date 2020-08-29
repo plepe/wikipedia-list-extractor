@@ -15,7 +15,7 @@ function loadExtractor (id, callback) {
   global.fetch('data/' + id + '.json')
     .then(res => res.json())
     .then(def => {
-      extractor = new MediawikiListExtractor(id, def)
+      extractor = new MediawikiListExtractor(id, def, options)
       callback(null, extractor)
     })
 }
@@ -27,7 +27,7 @@ window.onload = () => {
       if (err) { return global.alert(err) }
 
       const ids = f.elements.ids.value
-      extractor.get(ids.split(/ /g), options, (err, result) => {
+      extractor.get(ids.split(/ /g), (err, result) => {
         if (err) { return global.alert(err) }
 
         document.getElementById('result').innerHTML = escHtml(JSON.stringify(result, null, '    '))

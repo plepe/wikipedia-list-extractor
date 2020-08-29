@@ -2,16 +2,17 @@ const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
 const updateLinks = require('./updateLinks.js')
 
 class MediawikiListExtractor {
-  constructor (id, def) {
+  constructor (id, def, options = {}) {
     this.id = id
     this.def = def
     this.cache = {}
+    this.options = options
   }
 
-  loadPage (param, options, callback) {
+  loadPage (param, callback) {
     let url = 'https://' + param.source + '/wiki/' + encodeURIComponent(param.title)
-    if (options.proxy) {
-      url = options.proxy + 'source=' + encodeURIComponent(param.source) + '&page=' + encodeURIComponent(param.title)
+    if (this.options.proxy) {
+      url = this.options.proxy + 'source=' + encodeURIComponent(param.source) + '&page=' + encodeURIComponent(param.title)
     }
 
     global.fetch(url)
@@ -61,7 +62,7 @@ class MediawikiListExtractor {
     })
   }
 
-  get (ids, options, callback) {
+  get (ids, callback) {
     if (!Array.isArray(ids)) {
       ids = [ids]
     }
@@ -85,8 +86,8 @@ class MediawikiListExtractor {
     const search = 'hastemplate:"' + source.template + '" insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ intitle:/' + source.pageTitleMatch + '/'
 
     let url = 'https://' + source.source + '/w/index.php?search=' + encodeURIComponent(search)
-    if (options.proxy) {
-      url = options.proxy + 'source=' + encodeURIComponent(source.source) + '&search=' + encodeURIComponent(search)
+    if (this.options.proxy) {
+      url = this.options.proxy + 'source=' + encodeURIComponent(source.source) + '&search=' + encodeURIComponent(search)
     }
 
     global.fetch(url)
@@ -106,13 +107,12 @@ class MediawikiListExtractor {
             title: page,
             source: source.source
           },
-          options,
           (err, body) => {
             if (err) { return callback(err) }
 
             this.parsePage(source, page, body)
 
-            this.get(ids, options, (err, r) => {
+            this.get(ids, (err, r) => {
               if (err) { return callback(err) }
 
               result = result.concat(r)
