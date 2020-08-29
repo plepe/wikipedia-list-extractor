@@ -27,10 +27,11 @@ parser.addArgument('id', {
 
 const args = parser.parseArgs()
 
-let def = fs.readFileSync('data/' + (args.list || 'bda') + '.json')
+let listId = (args.list || 'bda')
+let def = fs.readFileSync('data/' + listId + '.json')
 def = JSON.parse(def)
 
-let list = new MediawikiListExtractor(def)
+let list = new MediawikiListExtractor(listId, def)
 list.get(args.id, {}, (err, result) => {
   console.log(JSON.stringify(result, null, '    '))
 })

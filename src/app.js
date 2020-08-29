@@ -10,7 +10,7 @@ window.onload = () => {
     global.fetch('data/bda.json')
       .then(res => res.json())
       .then(def => {
-        const extractor = new MediawikiListExtractor(def)
+        const extractor = new MediawikiListExtractor('bda', def)
         let ids = f.elements.ids.value
         extractor.get(ids.split(/ /g), options, (err, result) => {
           document.getElementById('result').innerHTML = JSON.stringify(result, null, '    ')

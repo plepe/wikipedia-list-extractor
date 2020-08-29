@@ -1,7 +1,8 @@
 const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
 
 class MediawikiListExtractor {
-  constructor (def) {
+  constructor (id, def) {
+    this.id = id
     this.def = def
     this.cache = {}
   }
