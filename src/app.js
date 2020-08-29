@@ -23,7 +23,7 @@ function load_extractor(id, callback) {
 window.onload = () => {
   const f = document.getElementsByTagName('form')[0]
   f.onsubmit = () => {
-    load_extractor('bda', (err, extractor) => {
+    load_extractor('AT-BDA', (err, extractor) => {
       if (err) { return alert(err) }
 
       let ids = f.elements.ids.value

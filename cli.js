@@ -17,7 +17,7 @@ const parser = new ArgumentParser({
 
 parser.addArgument(['-l', '--list'], {
   help: 'Which Wikipedia list to query. See data/ for available lists.',
-  default: 'bda'
+  default: 'AT-BDA'
 })
 
 parser.addArgument('id', {
@@ -27,7 +27,7 @@ parser.addArgument('id', {
 
 const args = parser.parseArgs()
 
-let listId = (args.list || 'bda')
+let listId = (args.list || 'AT-BDA')
 let def = fs.readFileSync('data/' + listId + '.json')
 def = JSON.parse(def)
 
