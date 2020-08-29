@@ -1,4 +1,5 @@
 const MediawikiListExtractor = require('./MediawikiListExtractor.js')
+const escHtml = require('html-escaper').escape
 
 const options = {
   proxy: 'proxy.php?'
@@ -27,7 +28,7 @@ window.onload = () => {
 
       let ids = f.elements.ids.value
       extractor.get(ids.split(/ /g), options, (err, result) => {
-        document.getElementById('result').innerHTML = JSON.stringify(result, null, '    ')
+        document.getElementById('result').innerHTML = escHtml(JSON.stringify(result, null, '    '))
       })
     })
 
