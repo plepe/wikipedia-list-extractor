@@ -24,17 +24,47 @@ class MediawikiListExtractor {
     const dom = global.document.createElement('div')
     dom.innerHTML = body
 
+    let citeRefs = {}
+    if (source.renderedIdInCiteURL) {
+      let reg = new RegExp(source.renderedIdInCiteURL)
+      let cites = dom.querySelectorAll('ol.references > li > span.reference-text > cite > a')
+      Array.from(cites).forEach(a => {
+        let m = a.href.match(reg)
+        if (m) {
+          citeRefs[a.parentNode.parentNode.parentNode.id] = m[1]
+        }
+      })
+    }
+
     const table = dom.getElementsByClassName(source.renderedTableClass)[0]
 
     const trs = Array.from(table.rows)
 
     trs.forEach(tr => {
-      const m = tr.id.match(new RegExp('^' + source.renderedTableRowPrefix + '(.*)'))
-      if (!m) {
-        return
+      let id
+
+      if (source.renderedTableRowPrefix) {
+        const m = tr.id.match(new RegExp('^' + source.renderedTableRowPrefix + '(.*)'))
+        if (!m) {
+          return
+        }
+        id = m[1]
       }
 
-      const id = m[1]
+      if (source.renderedIdInCiteURL) {
+        let as = tr.getElementsByTagName('a')
+        Array.from(as).forEach(a => {
+          let cite = a.getAttribute('href').substr(1)
+          if (cite in citeRefs) {
+            id = citeRefs[cite]
+          }
+        })
+
+        if (!id) {
+          return
+        }
+      }
+
       const data = {}
 
       Object.keys(source.renderedFields).forEach(fieldId => {
@@ -83,7 +113,20 @@ class MediawikiListExtractor {
       return callback(null, result)
     }
 
-    const search = 'hastemplate:"' + source.template + '" insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ intitle:/' + source.pageTitleMatch + '/'
+    let search = ''
+    if (source.template) {
+      search += 'hastemplate:"' + source.template + '" '
+    }
+
+    if (source.templateIdField) {
+      search += 'insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ '
+    } else if (source.searchIdPrefix || source.searchIdSuffix) {
+      search += 'insource:/' + (source.searchIdPrefix || '') + '(' + ids.join('|') + ')' + (source.searchIdSuffix || ' *\\|') + '/ '
+    }
+
+    if (source.pageTitleMatch) {
+      search += 'intitle:/' + source.pageTitleMatch + '/ '
+    }
 
     let url = 'https://' + source.source + '/w/index.php?search=' + encodeURIComponent(search)
     if (this.options.proxy) {
