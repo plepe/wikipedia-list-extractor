@@ -44,6 +44,22 @@ function requestListener (req, res) {
     })
   }
 
+  if (req.url === '/data/') {
+    return fs.readdir('data/', (err, files) => {
+      let text = '<ul>' +
+        files.map(file => {
+          if (file.match(/./)) {
+            return '<li><a href="' + file + '">' + file + '</a></li>'
+          }
+        }).join('') +
+        '</ul>'
+
+      res.setHeader('Content-Type', 'text/html')
+      res.writeHead(200)
+      res.end(text)
+    })
+  }
+
   if (!file) {
     res.writeHead(404)
     res.end('File not found')
