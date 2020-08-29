@@ -4,6 +4,27 @@ const path = require('path')
 const queryString = require('query-string')
 
 const proxy = require('./proxy/index.js')
+const MediawikiListExtractor = require('./src/MediawikiListExtractor.js')
+
+require('./node')
+
+let extractors = {}
+const options = {}
+
+function loadExtractor (id, callback) {
+  if (extractors[id]) {
+    return callback(null, extractors[id])
+  }
+
+  fs.readFile('data/' + id + '.json', (err, def) => {
+    if (err) { return callback(err) }
+
+    def = JSON.parse(def)
+
+    extractors[id] = new MediawikiListExtractor(id, def, options)
+    callback(null, extractors[id])
+  })
+}
 
 const files = [
   '/dist/app.js',
@@ -29,7 +50,7 @@ function requestListener (req, res) {
     file = req.url
   }
 
-  const m = req.url.match(/^\/proxy\/\?(.*)$/)
+  let m = req.url.match(/^\/proxy\/\?(.*)$/)
   if (m) {
     return proxy(queryString.parse(m[1]), (err, result) => {
       if (err) {
@@ -58,6 +79,29 @@ function requestListener (req, res) {
       res.writeHead(200)
       res.end(text)
     })
+  }
+
+  m = req.url.match(/\/api\/([A-Z-]*)\/([^?]+)(\?.*|)$/)
+  if (m) {
+    let listId = m[1]
+    let ids = m[2].split(/,/g)
+    let param = queryString.parse(m[3])
+
+    loadExtractor(listId, (err, extractor) => {
+      if (err) {
+        res.writeHead(500)
+        res.end()
+        return console.error(err)
+      }
+
+      extractor.get(ids, (err, result) => {
+        res.setHeader('Content-Type', 'application/json')
+        res.writeHead(200)
+        res.end(JSON.stringify(result, null, '    '))
+      })
+    })
+
+    return
   }
 
   if (!file) {

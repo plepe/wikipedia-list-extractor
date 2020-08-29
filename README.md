@@ -22,7 +22,17 @@ npm install
 npm start
 ```
 
-Point your browser to http://localhost:8080/
+Point your browser to http://localhost:8080/ for the interactive App.
+
+Additionally, the standalone server exposes a HTTP API which you can query:
+http://localhost:8080/api/<list>/<id>
+- where list is the ID of a list (e.g. INT-UNESCO)
+- where id is one or several ids, comma separated
+
+Example:
+```sh
+curl http://localhost:8080/api/INT-UNESCO/91,80
+```
 
 ## As module within a NodeJS application
 Wikipedia List Extractor uses a few modules (node-fetch, jsdom) as indirect dependencies (so they don't get compiled when using browserify). These have to be exposed as global variables. This can be done by requiring `wikipedia-list-extractor/node`.
