@@ -4,18 +4,32 @@ const options = {
   proxy: 'proxy.php?'
 }
 
+let extractor
+
+function load_extractor(id, callback) {
+  if (extractor && extractor.id === id) {
+    return callback(null, extractor)
+  }
+
+  global.fetch('data/' + id + '.json')
+    .then(res => res.json())
+    .then(def => {
+      extractor = new MediawikiListExtractor(id, def)
+      callback(null, extractor)
+    })
+}
+
 window.onload = () => {
   const f = document.getElementsByTagName('form')[0]
   f.onsubmit = () => {
-    global.fetch('data/bda.json')
-      .then(res => res.json())
-      .then(def => {
-        const extractor = new MediawikiListExtractor('bda', def)
-        let ids = f.elements.ids.value
-        extractor.get(ids.split(/ /g), options, (err, result) => {
-          document.getElementById('result').innerHTML = JSON.stringify(result, null, '    ')
-        })
+    load_extractor('bda', (err, extractor) => {
+      if (err) { return alert(err) }
+
+      let ids = f.elements.ids.value
+      extractor.get(ids.split(/ /g), options, (err, result) => {
+        document.getElementById('result').innerHTML = JSON.stringify(result, null, '    ')
       })
+    })
 
     return false
   }
