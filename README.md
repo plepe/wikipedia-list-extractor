@@ -27,13 +27,23 @@ Point your browser to http://localhost:8080/
 ## As module within a NodeJS application
 Wikipedia List Extractor uses a few modules (node-fetch, jsdom) as indirect dependencies (so they don't get compiled when using browserify). These have to be exposed as global variables. This can be done by requiring `wikipedia-list-extractor/node`.
 
+```js
+let extractor = new MediawikiListExtractor('INT-UNESCO', def)
+extractor.get(['91', '80'], (err, result) => {
+  console.log(err, JSON.stringify(result, null, '  '))
+})
+```
+
 ## As module within a web application in a browser
 As Wikipedia does not allow requests from a web browser, when they do not originate from a wikipedia page, we have to use a proxy. The URL of the proxy has to be supplied with the options, when loading MediawikiListExtractor:
 
 ```js
 // def is the file data/INT-UNESCO.json as Javascript Object
-new MediawikiListExtractor('INT-UNESCO', def, {
+let extractor = new MediawikiListExtractor('INT-UNESCO', def, {
   proxy: 'proxy/?'
+})
+extractor.get(['91', '80'], (err, result) => {
+  console.log(err, result)
 })
 ```
 
