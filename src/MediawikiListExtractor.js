@@ -1,4 +1,5 @@
 const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
+const updateLinks = require('./updateLinks.js')
 
 class MediawikiListExtractor {
   constructor (id, def) {
@@ -49,6 +50,7 @@ class MediawikiListExtractor {
             value = wikipediaGetImageProperties(imgs[0])
           }
         } else {
+          updateLinks(td, source.source)
           value = td.innerHTML
         }
 
