@@ -23,11 +23,13 @@ parser.addArgument('id', {
 
 const args = parser.parseArgs()
 
-let listId = (args.list || 'AT-BDA')
+const listId = (args.list || 'AT-BDA')
 let def = fs.readFileSync('data/' + listId + '.json')
 def = JSON.parse(def)
 
-let list = new MediawikiListExtractor(listId, def)
+const list = new MediawikiListExtractor(listId, def)
 list.get(args.id, {}, (err, result) => {
+  if (err) { return console.error(err) }
+
   console.log(JSON.stringify(result, null, '    '))
 })

@@ -18,7 +18,7 @@ class MediawikiListExtractor {
       .then(res => res.text())
       .then(body => callback(null, body))
   }
-  
+
   parsePage (source, page, body) {
     const dom = global.document.createElement('div')
     dom.innerHTML = body

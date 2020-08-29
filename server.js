@@ -3,16 +3,16 @@ const fs = require('fs')
 const path = require('path')
 const queryString = require('query-string')
 
-const proxy = require('./src/proxy.js')
+const proxy = require('./proxy/index.js')
 
 const files = [
   '/dist/app.js',
   '/index.html'
 ]
 const contentTypes = {
-  'html': 'text/html',
-  'js': 'application/javascript',
-  'json': 'application/json'
+  html: 'text/html',
+  js: 'application/javascript',
+  json: 'application/json'
 }
 
 function requestListener (req, res) {
@@ -29,7 +29,7 @@ function requestListener (req, res) {
     file = req.url
   }
 
-  let m = req.url.match(/^\/proxy\/\?(.*)$/)
+  const m = req.url.match(/^\/proxy\/\?(.*)$/)
   if (m) {
     return proxy(queryString.parse(m[1]), (err, result) => {
       if (err) {
@@ -51,7 +51,7 @@ function requestListener (req, res) {
   }
 
   fs.readFile(path.join(__dirname, file), (err, contents) => {
-    let m = file.match(/\.([a-z]*)$/i)
+    const m = file.match(/\.([a-z]*)$/i)
     ext = m[1]
 
     if (err) {

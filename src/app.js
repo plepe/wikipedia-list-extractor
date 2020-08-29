@@ -7,7 +7,7 @@ const options = {
 
 let extractor
 
-function load_extractor(id, callback) {
+function loadExtractor (id, callback) {
   if (extractor && extractor.id === id) {
     return callback(null, extractor)
   }
@@ -23,11 +23,13 @@ function load_extractor(id, callback) {
 window.onload = () => {
   const f = document.getElementsByTagName('form')[0]
   f.onsubmit = () => {
-    load_extractor('AT-BDA', (err, extractor) => {
-      if (err) { return alert(err) }
+    loadExtractor('AT-BDA', (err, extractor) => {
+      if (err) { return global.alert(err) }
 
-      let ids = f.elements.ids.value
+      const ids = f.elements.ids.value
       extractor.get(ids.split(/ /g), options, (err, result) => {
+        if (err) { return global.alert(err) }
+
         document.getElementById('result').innerHTML = escHtml(JSON.stringify(result, null, '    '))
       })
     })
