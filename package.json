@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "build": "browserify src/app.js -o dist/app.js",
-    "lint": "standard --fix src/*.js",
+    "lint": "standard --fix src/*.js server.js",
+    "start": "node server.js",
     "watch": "watchify --debug src/app.js -o dist/app.js -v"
   },
   "dependencies": {
@@ -19,6 +20,8 @@
   "devDependencies": {
     "browserify": "^16.5.2",
     "html-escaper": "^3.0.0",
+    "http-server": "^0.12.3",
+    "query-string": "^6.13.1",
     "standard": "^14.3.4",
     "watchify": "^3.11.1"
   }

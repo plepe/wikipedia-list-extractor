@@ -2,7 +2,7 @@ const MediawikiListExtractor = require('./MediawikiListExtractor.js')
 const escHtml = require('html-escaper').escape
 
 const options = {
-  proxy: 'proxy.php?'
+  proxy: 'proxy/?'
 }
 
 let extractor
