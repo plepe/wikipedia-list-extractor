@@ -3,6 +3,7 @@ const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
 class MediawikiListExtractor {
   constructor (def) {
     this.def = def
+    this.cache = {}
   }
 
   loadPage (param, options, callback) {
@@ -15,6 +16,47 @@ class MediawikiListExtractor {
       .then(res => res.text())
       .then(body => callback(null, body))
   }
+  
+  parsePage (source, page, body) {
+    const dom = global.document.createElement('div')
+    dom.innerHTML = body
+
+    const table = dom.getElementsByClassName(source.renderedTableClass)[0]
+
+    const trs = Array.from(table.rows)
+
+    trs.forEach(tr => {
+      const m = tr.id.match(new RegExp('^' + source.renderedTableRowPrefix + '(.*)'))
+      if (!m) {
+        return
+      }
+
+      const id = m[1]
+      const data = {}
+
+      Object.keys(source.renderedFields).forEach(fieldId => {
+        const fieldDef = source.renderedFields[fieldId]
+
+        const td = tr.cells[fieldDef.column]
+
+        let value
+
+        if (fieldDef.type === 'image') {
+          let imgs = td.getElementsByTagName('img')
+          imgs = Array.from(imgs).filter(img => img.width > 64 && img.height > 64)
+          if (imgs.length) {
+            value = wikipediaGetImageProperties(imgs[0])
+          }
+        } else {
+          value = td.innerHTML
+        }
+
+        data[fieldId] = value
+      })
+
+      this.cache[id] = { id, page, data }
+    })
+  }
 
   get (ids, options, callback) {
     if (!Array.isArray(ids)) {
@@ -22,6 +64,20 @@ class MediawikiListExtractor {
     }
 
     const source = this.def.sources[0]
+    let result = []
+
+    ids = ids.filter(id => {
+      if (id in this.cache) {
+        result.push(this.cache[id])
+        return false
+      } else {
+        return true
+      }
+    })
+
+    if (!ids.length) {
+      return callback(null, result)
+    }
 
     const search = 'hastemplate:"' + source.template + '" insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ intitle:/' + source.pageTitleMatch + '/'
 
@@ -38,7 +94,7 @@ class MediawikiListExtractor {
         const articles = dom.querySelectorAll('li.mw-search-result > div > a')
 
         if (!articles.length) {
-          return callback(null, [])
+          return callback(null, result)
         }
 
         const page = articles[0].getAttribute('title')
@@ -51,52 +107,15 @@ class MediawikiListExtractor {
           (err, body) => {
             if (err) { return callback(err) }
 
-            const dom = global.document.createElement('div')
-            dom.innerHTML = body
-            let result = []
+            this.parsePage(source, page, body)
 
-            const remaining = ids.filter(id => {
-              const tr = dom.querySelector('#' + source.renderedTableRowPrefix + id)
-              if (!tr) {
-                return true
-              }
+            this.get(ids, options, (err, r) => {
+              if (err) { return callback(err) }
 
-              const data = {}
+              result = result.concat(r)
 
-              Object.keys(source.renderedFields).forEach(fieldId => {
-                const fieldDef = source.renderedFields[fieldId]
-
-                const td = tr.cells[fieldDef.column]
-
-                let value
-
-                if (fieldDef.type === 'image') {
-                  let imgs = td.getElementsByTagName('img')
-                  imgs = Array.from(imgs).filter(img => img.width > 64 && img.height > 64)
-                  if (imgs.length) {
-                    value = wikipediaGetImageProperties(imgs[0])
-                  }
-                } else {
-                  value = td.innerHTML
-                }
-
-                data[fieldId] = value
-              })
-
-              result.push({ id, page, data })
-            })
-
-            if (remaining.length) {
-              this.get(remaining, options, (err, r) => {
-                if (err) { return callback(err) }
-
-                result = result.concat(r)
-
-                callback(null, result)
-              })
-            } else {
               callback(null, result)
-            }
+            })
           }
         )
       })
