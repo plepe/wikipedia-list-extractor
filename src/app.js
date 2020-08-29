@@ -5,18 +5,18 @@ const options = {
   proxy: 'proxy/?'
 }
 
-let extractor
+let extractors = {}
 
 function loadExtractor (id, callback) {
-  if (extractor && extractor.id === id) {
-    return callback(null, extractor)
+  if (extractors[id]) {
+    return callback(null, extractors[id])
   }
 
   global.fetch('data/' + id + '.json')
     .then(res => res.json())
     .then(def => {
-      extractor = new MediawikiListExtractor(id, def, options)
-      callback(null, extractor)
+      extractors[id] = new MediawikiListExtractor(id, def, options)
+      callback(null, extractors[id])
     })
 }
 
