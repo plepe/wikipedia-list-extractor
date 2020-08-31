@@ -16,12 +16,16 @@
             "renderedTableClass": "Denkmalliste-Tabelle",
             "renderedTableRowPrefix": "objektid-",
             "renderedFields": {
+                "title": {
+                    "column": 2,
+                    "type": "html"
+                },
                 "image": {
-                    "column": "0",
+                    "column": 0,
                     "type": "image"
                 },
                 "description": {
-                    "column": "4",
+                    "column": 4,
                     "type": "html"
                 }
             }
