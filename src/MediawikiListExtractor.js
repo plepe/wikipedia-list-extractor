@@ -41,7 +41,7 @@ class MediawikiListExtractor {
     const trs = Array.from(table.rows)
 
     trs.forEach(tr => {
-      let id
+      let id = tr.id
 
       if (source.renderedTableRowPrefix) {
         const m = tr.id.match(new RegExp('^' + source.renderedTableRowPrefix + '(.*)'))
@@ -88,7 +88,13 @@ class MediawikiListExtractor {
         data[fieldId] = value
       })
 
-      this.cache[id] = { id, page, data }
+      let url = 'https://' + source.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
+
+      if (tr.id) {
+        url += '#' + tr.id
+      }
+
+      this.cache[id] = { id, page, url, data }
     })
   }
 
