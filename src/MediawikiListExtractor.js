@@ -83,6 +83,19 @@ class MediawikiListExtractor {
         } else {
           updateLinks(td, source.source)
           value = td.innerHTML
+
+          if (fieldDef.replaceOld && fieldDef.replaceNew) {
+            if (!('replaceRegexp' in fieldDef)) {
+              let regexp = fieldDef.replaceOld.match(/\/(.*)\/(\w*)/)
+              fieldDef.replaceRegexp = new RegExp(regexp[1], regexp[2])
+            }
+
+            if (fieldDef.replaceRegexp) {
+              value = value.replace(fieldDef.replaceRegexp, fieldDef.replaceNew)
+            }
+
+            value = value.trim()
+          }
         }
 
         data[fieldId] = value
