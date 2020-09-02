@@ -18,7 +18,17 @@
             "renderedFields": {
                 "title": {
                     "column": 2,
-                    "type": "html"
+                    "type": "html",
+                    "replaceOld": "/^(?:<a [^>]+>)(.*)(?:</a>)<br>.*$/m",
+                    "replaceNew": "$1"
+                },
+                "commons-category": {
+                    "column": 1,
+                    "type": "html",
+                    "domQuery": "a",
+                    "domAttribute": "href",
+                    "1replaceOld": "/<a href=\"https:\/\/commons.wikimedia.org\/wiki/Category:([^\"]*)\".*/m",
+                    "replaceNew": "$1"
                 },
                 "image": {
                     "column": 0,
