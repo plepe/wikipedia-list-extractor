@@ -82,7 +82,17 @@ class MediawikiListExtractor {
           }
         } else {
           updateLinks(td, source.source)
-          value = td.innerHTML
+          let dom = td
+
+          if (fieldDef.domQuery) {
+            dom = dom.querySelector(fieldDef.domQuery)
+          }
+
+          if (fieldDef.domAttribute) {
+            value = dom.getAttribute(fieldDef.domAttribute)
+          } else {
+            value = dom.innerHTML
+          }
 
           if (fieldDef.replaceOld && fieldDef.replaceNew) {
             if (!('replaceRegexp' in fieldDef)) {
