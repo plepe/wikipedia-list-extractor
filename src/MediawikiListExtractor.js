@@ -124,7 +124,7 @@ class MediawikiListExtractor {
   /**
    * @param {string|string[]} ids - Id or list of ids to load
    * @param {object} options - Options
-   * @param {function} callback - Callback function which will be called with (err, result), where result is an array with all results
+   * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
    */
   get (ids, options, callback) {
     if (!Array.isArray(ids)) {
@@ -137,11 +137,11 @@ class MediawikiListExtractor {
     }
 
     const source = this.def.sources[0]
-    let result = []
+    const result = {}
 
     ids = ids.filter(id => {
       if (id in this.cache) {
-        result.push(this.cache[id])
+        result[id] = this.cache[id]
         return false
       } else {
         return true
@@ -197,7 +197,9 @@ class MediawikiListExtractor {
             this.get(ids, options, (err, r) => {
               if (err) { return callback(err) }
 
-              result = result.concat(r)
+              for (let k in r) {
+                result[k] = r[k]
+              }
 
               callback(null, result)
             })
