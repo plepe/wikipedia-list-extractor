@@ -121,9 +121,19 @@ class MediawikiListExtractor {
     })
   }
 
-  get (ids, callback) {
+  /**
+   * @param {string|string[]} ids - Id or list of ids to load
+   * @param {object} options - Options
+   * @param {function} callback - Callback function which will be called with (err, result), where result is an array with all results
+   */
+  get (ids, options, callback) {
     if (!Array.isArray(ids)) {
       ids = [ids]
+    }
+
+    if (typeof options === 'function') {
+      callback = options
+      options = {}
     }
 
     const source = this.def.sources[0]
@@ -184,7 +194,7 @@ class MediawikiListExtractor {
 
             this.parsePage(source, page, body)
 
-            this.get(ids, (err, r) => {
+            this.get(ids, options, (err, r) => {
               if (err) { return callback(err) }
 
               result = result.concat(r)
