@@ -124,6 +124,7 @@ class MediawikiListExtractor {
   /**
    * @param {string|string[]} ids - Id or list of ids to load
    * @param {object} options - Options
+   * @param {boolean} options.forceCache - check only cached information
    * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
    */
   get (ids, options, callback) {
@@ -149,6 +150,10 @@ class MediawikiListExtractor {
     })
 
     if (!ids.length) {
+      return callback(null, result)
+    }
+
+    if (options.forceCache) {
       return callback(null, result)
     }
 
@@ -193,6 +198,8 @@ class MediawikiListExtractor {
             if (err) { return callback(err) }
 
             this.parsePage(source, page, body)
+
+            options.forceCache = true
 
             this.get(ids, options, (err, r) => {
               if (err) { return callback(err) }
