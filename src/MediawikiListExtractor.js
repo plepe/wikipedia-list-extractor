@@ -170,6 +170,41 @@ class MediawikiListExtractor {
     })
   }
 
+  loadProcessed (page, source, callback) {
+    this.loadPage({title: page, source: source.source},
+      (err, body) => {
+        if (err) { return callback(err) }
+
+        this.parsePage(source, page, body)
+
+        callback()
+      }
+    )
+  }
+
+  loadRaw (page, source, callback) {
+    this.loadSource({title: page, source: source.source},
+      (err, wikitext) => {
+        if (err) { return callback(err) }
+
+        const items = parseMediawikiTemplate(wikitext, source.template)
+        items.forEach(raw => {
+          let id = raw.ObjektID
+
+          if (id) {
+            if (id in this.cache) {
+              this.cache[id].raw = raw
+            } else {
+              this.cache[id] = { id, page, raw }
+            }
+          }
+        })
+
+        callback()
+      }
+    )
+  }
+
   /**
    * @param {string|string[]} ids - Id or list of ids to load
    * @param {object} options - Options
@@ -240,39 +275,8 @@ class MediawikiListExtractor {
         const page = articles[0].getAttribute('title')
 
         async.parallel([
-          (done) => {
-            this.loadPage({title: page, source: source.source},
-              (err, body) => {
-                if (err) { return done(err) }
-
-                this.parsePage(source, page, body)
-
-                done()
-              }
-            )
-          },
-          (done) => {
-            this.loadSource({title: page, source: source.source},
-              (err, wikitext) => {
-                if (err) { return done(err) }
-
-                const items = parseMediawikiTemplate(wikitext, source.template)
-                items.forEach(raw => {
-                  let id = raw.ObjektID
-
-                  if (id) {
-                    if (id in this.cache) {
-                      this.cache[id].raw = raw
-                    } else {
-                      this.cache[id] = { id, page, raw }
-                    }
-                  }
-                })
-
-                done()
-              }
-            )
-          }
+          done => this.loadProcessed(page, source, done),
+          done => this.loadRaw(page, source, done)
         ],
         (err) => {
           if (err) {
