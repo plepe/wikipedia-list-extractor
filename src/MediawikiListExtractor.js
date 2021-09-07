@@ -121,6 +121,20 @@ class MediawikiListExtractor {
 
             value = value.trim()
           }
+
+          if (fieldDef.regexp) {
+            if (!fieldDef._regexp) {
+              let regexp = fieldDef.regexp.match(/^\/(.*)\/(\w*)$/)
+              fieldDef._regexp = new RegExp(regexp[1], regexp[2])
+            }
+
+            let m = value.match(fieldDef._regexp)
+            if (!m) {
+              return
+            }
+
+            value = m[1].trim()
+          }
         }
 
         data[fieldId] = value

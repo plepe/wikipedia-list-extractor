@@ -16,11 +16,15 @@
             "renderedTableClass": "Denkmalliste-Tabelle",
             "renderedTableRowPrefix": "objektid-",
             "renderedFields": {
+                "object-id": {
+                    "column": 2,
+                    "type": "html",
+                    "regexp": "/Objekt-ID:<\\/span>&nbsp;([0-9]+)<\\/div>/"
+                },
                 "title": {
                     "column": 2,
                     "type": "html",
-                    "replaceOld": "/^(?:<a [^>]+>)(.*)(?:</a>)<br>.*$/m",
-                    "replaceNew": "$1"
+                    "regexp": "/^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m"
                 },
                 "commons-category": {
                     "column": 1,
