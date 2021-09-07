@@ -80,7 +80,7 @@ class MediawikiListExtractor {
         }
       }
 
-      const data = {}
+      const processed = {}
 
       Object.keys(source.renderedFields).forEach(fieldId => {
         const fieldDef = source.renderedFields[fieldId]
@@ -144,7 +144,7 @@ class MediawikiListExtractor {
           }
         }
 
-        data[fieldId] = value
+        processed[fieldId] = value
 
         if (source.renderedIdField === fieldId) {
           id = value
@@ -157,7 +157,7 @@ class MediawikiListExtractor {
         url += '#' + tr.id
       }
 
-      this.cache[id] = { id, page, url, data }
+      this.cache[id] = { id, page, url, processed }
     })
   }
 
