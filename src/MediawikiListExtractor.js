@@ -1,3 +1,4 @@
+const parseMediawikiTemplate = require('parse-mediawiki-template')
 const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
 const updateLinks = require('./updateLinks.js')
 
@@ -7,6 +8,20 @@ class MediawikiListExtractor {
     this.def = def
     this.cache = {}
     this.options = options
+  }
+
+  loadSource (param, callback) {
+    let url = 'https://' + param.source + '/w/api.php?action=parse&format=json&prop=wikitext&page=' + encodeURIComponent(param.title)
+    if (this.options.proxy) {
+      url = this.options.proxy + 'source=' + encodeURIComponent(param.source) + '&wikitext=' + encodeURIComponent(param.title)
+    }
+
+    global.fetch(url)
+      .then(res => res.json())
+      .then(result => {
+        const wikitext = result.parse.wikitext['*']
+        callback(null, wikitext)
+      })
   }
 
   loadPage (param, callback) {

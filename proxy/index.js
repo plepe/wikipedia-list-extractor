@@ -9,6 +9,9 @@ module.exports = function proxy (param, callback) {
   if (param.page) {
     url += 'wiki/' + encodeURIComponent(param.page.replace(/ /g, '_'))
   }
+  if (param.wikitext) {
+    url += 'w/api.php?action=parse&format=json&prop=wikitext&page=' + encodeURIComponent(param.wikitext.replace(/ /g, '_'))
+  }
 
   // console.log('> ' + url)
 
