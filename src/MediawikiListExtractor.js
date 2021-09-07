@@ -209,6 +209,8 @@ class MediawikiListExtractor {
    * @param {string|string[]} ids - Id or list of ids to load
    * @param {object} options - Options
    * @param {boolean} options.forceCache - check only cached information
+   * @param {boolean} [options.loadProcessed=true] - load processed data
+   * @param {boolean} [options.loadRaw=true] - load raw data
    * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
    */
   get (ids, options, callback) {
@@ -274,11 +276,16 @@ class MediawikiListExtractor {
 
         const page = articles[0].getAttribute('title')
 
-        async.parallel([
-          done => this.loadProcessed(page, source, done),
-          done => this.loadRaw(page, source, done)
-        ],
-        (err) => {
+        const functions = []
+        if (!('loadProcessed' in options) || options.loadProcessed) {
+          functions.push(done => this.loadProcessed(page, source, done))
+        }
+
+        if (!('loadRaw' in options) || options.loadRaw) {
+          functions.push(done => this.loadRaw(page, source, done))
+        }
+
+        async.parallel(functions, (err) => {
           if (err) {
             return callback(err)
           }
