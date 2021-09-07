@@ -43,12 +43,12 @@ class MediawikiListExtractor {
     const dom = global.document.createElement('div')
     dom.innerHTML = body
 
-    let citeRefs = {}
+    const citeRefs = {}
     if (source.renderedIdInCiteURL) {
-      let reg = new RegExp(source.renderedIdInCiteURL)
-      let cites = dom.querySelectorAll('ol.references > li > span.reference-text > cite > a')
+      const reg = new RegExp(source.renderedIdInCiteURL)
+      const cites = dom.querySelectorAll('ol.references > li > span.reference-text > cite > a')
       Array.from(cites).forEach(a => {
-        let m = a.href.match(reg)
+        const m = a.href.match(reg)
         if (m) {
           citeRefs[a.parentNode.parentNode.parentNode.id] = m[1]
         }
@@ -71,9 +71,9 @@ class MediawikiListExtractor {
       }
 
       if (source.renderedIdInCiteURL) {
-        let as = tr.getElementsByTagName('a')
+        const as = tr.getElementsByTagName('a')
         Array.from(as).forEach(a => {
-          let cite = a.getAttribute('href').substr(1)
+          const cite = a.getAttribute('href').substr(1)
           if (cite in citeRefs) {
             id = citeRefs[cite]
           }
@@ -121,7 +121,7 @@ class MediawikiListExtractor {
 
           if (fieldDef.replaceOld && fieldDef.replaceNew) {
             if (!('replaceRegexp' in fieldDef)) {
-              let regexp = fieldDef.replaceOld.match(/^\/(.*)\/(\w*)$/)
+              const regexp = fieldDef.replaceOld.match(/^\/(.*)\/(\w*)$/)
               fieldDef.replaceRegexp = new RegExp(regexp[1], regexp[2])
             }
 
@@ -135,11 +135,11 @@ class MediawikiListExtractor {
 
           if (fieldDef.regexp) {
             if (!fieldDef._regexp) {
-              let regexp = fieldDef.regexp.match(/^\/(.*)\/(\w*)$/)
+              const regexp = fieldDef.regexp.match(/^\/(.*)\/(\w*)$/)
               fieldDef._regexp = new RegExp(regexp[1], regexp[2])
             }
 
-            let m = value.match(fieldDef._regexp)
+            const m = value.match(fieldDef._regexp)
             if (!m) {
               return
             }
@@ -171,7 +171,7 @@ class MediawikiListExtractor {
   }
 
   loadProcessed (page, source, callback) {
-    this.loadPage({title: page, source: source.source},
+    this.loadPage({ title: page, source: source.source },
       (err, body) => {
         if (err) { return callback(err) }
 
@@ -183,13 +183,13 @@ class MediawikiListExtractor {
   }
 
   loadRaw (page, source, callback) {
-    this.loadSource({title: page, source: source.source},
+    this.loadSource({ title: page, source: source.source },
       (err, wikitext) => {
         if (err) { return callback(err) }
 
         const items = parseMediawikiTemplate(wikitext, source.template)
         items.forEach(raw => {
-          let id = raw.ObjektID
+          const id = raw.ObjektID
 
           if (id) {
             if (id in this.cache) {
@@ -295,7 +295,7 @@ class MediawikiListExtractor {
           this.get(ids, options, (err, r) => {
             if (err) { return callback(err) }
 
-            for (let k in r) {
+            for (const k in r) {
               result[k] = r[k]
             }
 

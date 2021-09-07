@@ -8,7 +8,7 @@ const MediawikiListExtractor = require('./src/MediawikiListExtractor.js')
 
 require('./node')
 
-let extractors = {}
+const extractors = {}
 const options = {}
 
 function loadExtractor (id, callback) {
@@ -67,7 +67,11 @@ function requestListener (req, res) {
 
   if (req.url === '/data/') {
     return fs.readdir('data/', (err, files) => {
-      let text = '<ul>' +
+      if (err) {
+        return console.error(err)
+      }
+
+      const text = '<ul>' +
         files.map(file => {
           if (file.match(/./)) {
             return '<li><a href="' + file + '">' + file + '</a></li>'
@@ -83,9 +87,9 @@ function requestListener (req, res) {
 
   m = req.url.match(/\/api\/([A-Z-]*)\/([^?]+)(\?.*|)$/)
   if (m) {
-    let listId = m[1]
-    let ids = m[2].split(/,/g)
-    let param = queryString.parse(m[3])
+    const listId = m[1]
+    const ids = m[2].split(/,/g)
+    const param = queryString.parse(m[3])
 
     loadExtractor(listId, (err, extractor) => {
       if (err) {
@@ -95,6 +99,13 @@ function requestListener (req, res) {
       }
 
       extractor.get(ids, (err, result) => {
+        if (err) {
+          console.error(err)
+          res.writeHead(500)
+          res.end(err)
+          return
+        }
+
         res.setHeader('Content-Type', 'application/json')
         res.writeHead(200)
         res.end(JSON.stringify(result, null, '    '))

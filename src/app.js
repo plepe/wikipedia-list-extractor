@@ -5,7 +5,7 @@ const options = {
   proxy: 'proxy/?'
 }
 
-let extractors = {}
+const extractors = {}
 
 function loadExtractor (id, callback) {
   if (extractors[id]) {
@@ -24,21 +24,21 @@ window.onload = () => {
   global.fetch('data/')
     .then(res => res.text())
     .then(body => {
-      let div = document.createElement('div')
+      const div = document.createElement('div')
       div.innerHTML = body
 
-      let as = div.getElementsByTagName('a')
-      let lists = Array.from(as).forEach(a => {
-        let m = a.getAttribute('href').match(/^([A-Z-]+)\.json$/)
+      const as = div.getElementsByTagName('a')
+      const lists = Array.from(as).forEach(a => {
+        const m = a.getAttribute('href').match(/^([A-Z-]+)\.json$/)
         if (m) {
-          let option = document.createElement('option')
+          const option = document.createElement('option')
           option.value = m[1]
           option.appendChild(document.createTextNode(m[1]))
           f.elements.list.appendChild(option)
         }
       })
 
-      //if (err) { return global.alert(err) }
+      // if (err) { return global.alert(err) }
     })
 
   const f = document.getElementsByTagName('form')[0]
