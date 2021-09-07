@@ -86,6 +86,9 @@ class MediawikiListExtractor {
         const fieldDef = source.renderedFields[fieldId]
 
         const td = tr.cells[fieldDef.column]
+        if (!td) {
+          return
+        }
 
         let value
 
@@ -101,6 +104,9 @@ class MediawikiListExtractor {
 
           if (fieldDef.domQuery) {
             dom = dom.querySelector(fieldDef.domQuery)
+            if (!dom) {
+              return
+            }
           }
 
           if (fieldDef.domAttribute) {
@@ -111,13 +117,14 @@ class MediawikiListExtractor {
 
           if (fieldDef.replaceOld && fieldDef.replaceNew) {
             if (!('replaceRegexp' in fieldDef)) {
-              let regexp = fieldDef.replaceOld.match(/\/(.*)\/(\w*)/)
+              let regexp = fieldDef.replaceOld.match(/^\/(.*)\/(\w*)$/)
               fieldDef.replaceRegexp = new RegExp(regexp[1], regexp[2])
             }
 
-            if (fieldDef.replaceRegexp) {
-              value = value.replace(fieldDef.replaceRegexp, fieldDef.replaceNew)
+            if (!value.match(fieldDef.replaceRegexp)) {
+              return
             }
+            value = value.replace(fieldDef.replaceRegexp, fieldDef.replaceNew)
 
             value = value.trim()
           }
