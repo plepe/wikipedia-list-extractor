@@ -14,7 +14,7 @@
             "templateIdField": "ObjektID",
             "pageTitleMatch": "Liste der denkmalgeschützten Objekte in",
             "renderedTableClass": "Denkmalliste-Tabelle",
-            "renderedTableRowPrefix": "objektid-",
+            "renderedIdField": "object-id",
             "renderedFields": {
                 "object-id": {
                     "column": 2,

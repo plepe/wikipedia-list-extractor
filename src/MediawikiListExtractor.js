@@ -145,6 +145,10 @@ class MediawikiListExtractor {
         }
 
         data[fieldId] = value
+
+        if (source.renderedIdField === fieldId) {
+          id = value
+        }
       })
 
       let url = 'https://' + source.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
