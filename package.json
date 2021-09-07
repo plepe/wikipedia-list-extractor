@@ -15,8 +15,10 @@
   },
   "dependencies": {
     "argparse": "^1.0.10",
+    "async": "^3.2.1",
     "jsdom": "^16.4.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "parse-mediawiki-template": "^0.1.0"
   },
   "devDependencies": {
     "browserify": "^16.5.2",

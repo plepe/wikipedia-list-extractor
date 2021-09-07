@@ -1,4 +1,8 @@
 const parseMediawikiTemplate = require('parse-mediawiki-template')
+const async = {
+  parallel: require('async/parallel')
+}
+
 const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
 const updateLinks = require('./updateLinks.js')
 
@@ -157,7 +161,12 @@ class MediawikiListExtractor {
         url += '#' + tr.id
       }
 
-      this.cache[id] = { id, page, url, processed }
+      if (id in this.cache) {
+        this.cache[id].url = url
+        this.cache[id].processed = processed
+      } else {
+        this.cache[id] = { id, page, url, processed }
+      }
     })
   }
 
@@ -229,29 +238,59 @@ class MediawikiListExtractor {
         }
 
         const page = articles[0].getAttribute('title')
-        this.loadPage(
-          {
-            title: page,
-            source: source.source
+
+        async.parallel([
+          (done) => {
+            this.loadPage({title: page, source: source.source},
+              (err, body) => {
+                if (err) { return done(err) }
+
+                this.parsePage(source, page, body)
+
+                done()
+              }
+            )
           },
-          (err, body) => {
+          (done) => {
+            this.loadSource({title: page, source: source.source},
+              (err, wikitext) => {
+                if (err) { return done(err) }
+
+                const items = parseMediawikiTemplate(wikitext, source.template)
+                items.forEach(raw => {
+                  let id = raw.ObjektID
+
+                  if (id) {
+                    if (id in this.cache) {
+                      this.cache[id].raw = raw
+                    } else {
+                      this.cache[id] = { id, page, raw }
+                    }
+                  }
+                })
+
+                done()
+              }
+            )
+          }
+        ],
+        (err) => {
+          if (err) {
+            return callback(err)
+          }
+
+          options.forceCache = true
+
+          this.get(ids, options, (err, r) => {
             if (err) { return callback(err) }
 
-            this.parsePage(source, page, body)
+            for (let k in r) {
+              result[k] = r[k]
+            }
 
-            options.forceCache = true
-
-            this.get(ids, options, (err, r) => {
-              if (err) { return callback(err) }
-
-              for (let k in r) {
-                result[k] = r[k]
-              }
-
-              callback(null, result)
-            })
-          }
-        )
+            callback(null, result)
+          })
+        })
       })
   }
 }
