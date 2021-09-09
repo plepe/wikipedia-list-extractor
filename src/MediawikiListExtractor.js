@@ -3,8 +3,8 @@ const async = {
   parallel: require('async/parallel')
 }
 
-const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
-const updateLinks = require('./updateLinks.js')
+const parseProcessedPage = require('./parseProcessedPage')
+const processedItemGetId = require('./processedItemGetId')
 
 class MediawikiListExtractor {
   constructor (id, def, options = {}) {
@@ -45,139 +45,29 @@ class MediawikiListExtractor {
       this.pageCache[page] = {}
     }
 
+    const items = parseProcessedPage(source, body)
+
     this.pageCache[page].processed = {}
 
-    const dom = global.document.createElement('div')
-    dom.innerHTML = body
-
-    const citeRefs = {}
-    if (source.renderedIdInCiteURL) {
-      const reg = new RegExp(source.renderedIdInCiteURL)
-      const cites = dom.querySelectorAll('ol.references > li > span.reference-text > cite > a')
-      Array.from(cites).forEach(a => {
-        const m = a.href.match(reg)
-        if (m) {
-          citeRefs[a.parentNode.parentNode.parentNode.id] = m[1]
-        }
-      })
-    }
-
-    const table = dom.getElementsByClassName(source.renderedTableClass)[0]
-
-    const trs = Array.from(table.rows)
-
-    trs.forEach(tr => {
-      let id = tr.id
-
-      if (source.renderedTableRowPrefix) {
-        const m = tr.id.match(new RegExp('^' + source.renderedTableRowPrefix + '(.*)'))
-        if (!m) {
-          return
-        }
-        id = m[1]
-      }
-
-      if (source.renderedIdInCiteURL) {
-        const as = tr.getElementsByTagName('a')
-        Array.from(as).forEach(a => {
-          const cite = a.getAttribute('href').substr(1)
-          if (cite in citeRefs) {
-            id = citeRefs[cite]
-          }
-        })
-
-        if (!id) {
-          return
-        }
-      }
-
-      const processed = {}
-
-      Object.keys(source.renderedFields).forEach(fieldId => {
-        const fieldDef = source.renderedFields[fieldId]
-
-        const td = tr.cells[fieldDef.column]
-        if (!td) {
-          return
-        }
-
-        let value
-
-        if (fieldDef.type === 'image') {
-          let imgs = td.getElementsByTagName('img')
-          imgs = Array.from(imgs).filter(img => img.width > 64 && img.height > 64)
-          if (imgs.length) {
-            value = wikipediaGetImageProperties(imgs[0])
-          }
-        } else {
-          updateLinks(td, source.source)
-          let dom = td
-
-          if (fieldDef.domQuery) {
-            dom = dom.querySelector(fieldDef.domQuery)
-            if (!dom) {
-              return
-            }
-          }
-
-          if (fieldDef.domAttribute) {
-            value = dom.getAttribute(fieldDef.domAttribute)
-          } else {
-            value = dom.innerHTML
-          }
-
-          if (fieldDef.replaceOld && fieldDef.replaceNew) {
-            if (!('replaceRegexp' in fieldDef)) {
-              const regexp = fieldDef.replaceOld.match(/^\/(.*)\/(\w*)$/)
-              fieldDef.replaceRegexp = new RegExp(regexp[1], regexp[2])
-            }
-
-            if (!value.match(fieldDef.replaceRegexp)) {
-              return
-            }
-            value = value.replace(fieldDef.replaceRegexp, fieldDef.replaceNew)
-
-            value = value.trim()
-          }
-
-          if (fieldDef.regexp) {
-            if (!fieldDef._regexp) {
-              const regexp = fieldDef.regexp.match(/^\/(.*)\/(\w*)$/)
-              fieldDef._regexp = new RegExp(regexp[1], regexp[2])
-            }
-
-            const m = value.match(fieldDef._regexp)
-            if (!m) {
-              return
-            }
-
-            value = m[1].trim()
-          }
-        }
-
-        processed[fieldId] = value
-
-        if (source.renderedIdField === fieldId) {
-          id = value
-        }
-      })
+    items.forEach((item, index) => {
+      const id = processedItemGetId(source, item, page, index)
 
       let url = 'https://' + source.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
 
-      if (tr.id) {
-        url += '#' + tr.id
+      if (id) {
+        url += '#' + id
       }
 
       if (id) {
         if (id in this.cache) {
           this.cache[id].url = url
-          this.cache[id].processed = processed
+          this.cache[id].processed = item
         } else {
-          this.cache[id] = { id, page, url, processed }
+          this.cache[id] = { id, page, url, processed: item }
         }
-
-        this.pageCache[page].processed[id] = processed
       }
+
+      this.pageCache[page].processed[id] = item
     })
 
     return this.pageCache[page].processed

@@ -25,8 +25,9 @@ module.exports = function parseProcessedPage (def, body) {
   trs.splice(0, 1) // ignore header row
 
   trs.forEach(tr => {
-    let id = tr.id
+    const item = {}
 
+    /*
     if (def.renderedTableRowPrefix) {
       const m = tr.id.match(new RegExp('^' + def.renderedTableRowPrefix + '(.*)'))
       if (!m) {
@@ -48,8 +49,7 @@ module.exports = function parseProcessedPage (def, body) {
         return
       }
     }
-
-    const item = {}
+    */
 
     Object.keys(def.renderedFields).forEach(fieldId => {
       const fieldDef = def.renderedFields[fieldId]
