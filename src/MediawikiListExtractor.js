@@ -11,6 +11,7 @@ class MediawikiListExtractor {
     this.id = id
     this.def = def
     this.cache = {}
+    this.pageCache = {}
     this.options = options
   }
 
@@ -40,6 +41,12 @@ class MediawikiListExtractor {
   }
 
   parsePage (source, page, body) {
+    if (!(page in this.pageCache)) {
+      this.pageCache[page] = {}
+    }
+
+    this.pageCache[page].processed = {}
+
     const dom = global.document.createElement('div')
     dom.innerHTML = body
 
@@ -161,13 +168,19 @@ class MediawikiListExtractor {
         url += '#' + tr.id
       }
 
-      if (id in this.cache) {
-        this.cache[id].url = url
-        this.cache[id].processed = processed
-      } else {
-        this.cache[id] = { id, page, url, processed }
+      if (id) {
+        if (id in this.cache) {
+          this.cache[id].url = url
+          this.cache[id].processed = processed
+        } else {
+          this.cache[id] = { id, page, url, processed }
+        }
+
+        this.pageCache[page].processed[id] = processed
       }
     })
+
+    return this.pageCache[page].processed
   }
 
   loadProcessed (page, source, callback) {
@@ -175,17 +188,27 @@ class MediawikiListExtractor {
       (err, body) => {
         if (err) { return callback(err) }
 
-        this.parsePage(source, page, body)
+        const result = this.parsePage(source, page, body)
 
-        callback()
+        callback(null, result)
       }
     )
   }
 
   loadRaw (page, source, callback) {
+    let result = {}
+
+    if (!(page in this.pageCache)) {
+      this.pageCache[page] = {}
+    }
+
+    this.pageCache[page].raw = {}
+
     this.loadSource({ title: page, source: source.source },
       (err, wikitext) => {
         if (err) { return callback(err) }
+
+        this.pageCache[page].wikitext = wikitext
 
         const items = parseMediawikiTemplate(wikitext, source.template)
         items.forEach(raw => {
@@ -197,10 +220,44 @@ class MediawikiListExtractor {
             } else {
               this.cache[id] = { id, page, raw }
             }
+
+            this.pageCache[page].raw[id] = raw
           }
         })
 
-        callback()
+        callback(null, this.pageCache[page].raw)
+      }
+    )
+  }
+
+  /**
+   * Load all items on the specified wikipedia page
+   * @param {string} page - Title of the page
+   * @param {object} options - Options
+   * @param {boolean} [options.loadProcessed=true] - load processed data
+   * @param {boolean} [options.loadRaw=true] - load raw data
+   * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
+   */
+  getPageItems (page, options, callback) {
+    if (typeof options === 'function') {
+      callback = options
+      options = {}
+    }
+
+    const source = this.def.sources[0]
+
+    const functions = {}
+    if (!('loadProcessed' in options) || options.loadProcessed) {
+      functions.processed = done => this.loadProcessed(page, source, done)
+    }
+
+    if (!('loadRaw' in options) || options.loadRaw) {
+      functions.raw = done => this.loadRaw(page, source, done)
+    }
+
+    async.parallel(functions,
+      (err, {processed, raw}) => {
+        console.log(processed, raw)
       }
     )
   }
