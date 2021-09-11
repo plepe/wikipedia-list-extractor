@@ -5,6 +5,7 @@ const async = {
 
 const parseProcessedPage = require('./parseProcessedPage')
 const processedItemGetId = require('./processedItemGetId')
+const findPageForIds = require('./findPageForIds')
 
 class MediawikiListExtractor {
   constructor (id, def, options = {}) {
@@ -190,66 +191,42 @@ class MediawikiListExtractor {
       return callback(null, result)
     }
 
-    let search = ''
-    if (source.template) {
-      search += 'hastemplate:"' + source.template + '" '
-    }
+    findPageForIds (source, ids, this.options, (err, page) => {
+      if (err) {
+        return callback(err)
+      }
 
-    if (source.templateIdField) {
-      search += 'insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ '
-    } else if (source.searchIdPrefix || source.searchIdSuffix) {
-      search += 'insource:/' + (source.searchIdPrefix || '') + '(' + ids.join('|') + ')' + (source.searchIdSuffix || ' *\\|') + '/ '
-    }
+      if (!page) {
+        return callback(null, result)
+      }
 
-    if (source.pageTitleMatch) {
-      search += 'intitle:/' + source.pageTitleMatch + '/ '
-    }
+      const functions = []
+      if (!('loadProcessed' in options) || options.loadProcessed) {
+        functions.push(done => this.loadProcessed(page, source, done))
+      }
 
-    let url = source.source + '/w/index.php?search=' + encodeURIComponent(search)
-    if (this.options.proxy) {
-      url = this.options.proxy + 'source=' + encodeURIComponent(source.source) + '&search=' + encodeURIComponent(search)
-    }
+      if (!('loadRaw' in options) || options.loadRaw) {
+        functions.push(done => this.loadRaw(page, source, done))
+      }
 
-    global.fetch(url)
-      .then(res => res.text())
-      .then(body => {
-        const dom = global.document.createElement('div')
-        dom.innerHTML = body
-        const articles = dom.querySelectorAll('li.mw-search-result > div > a')
-
-        if (!articles.length) {
-          return callback(null, result)
+      async.parallel(functions, (err) => {
+        if (err) {
+          return callback(err)
         }
 
-        const page = articles[0].getAttribute('title')
+        options.forceCache = true
 
-        const functions = []
-        if (!('loadProcessed' in options) || options.loadProcessed) {
-          functions.push(done => this.loadProcessed(page, source, done))
-        }
+        this.get(ids, options, (err, r) => {
+          if (err) { return callback(err) }
 
-        if (!('loadRaw' in options) || options.loadRaw) {
-          functions.push(done => this.loadRaw(page, source, done))
-        }
-
-        async.parallel(functions, (err) => {
-          if (err) {
-            return callback(err)
+          for (const k in r) {
+            result[k] = r[k]
           }
 
-          options.forceCache = true
-
-          this.get(ids, options, (err, r) => {
-            if (err) { return callback(err) }
-
-            for (const k in r) {
-              result[k] = r[k]
-            }
-
-            callback(null, result)
-          })
+          callback(null, result)
         })
       })
+    })
   }
 }
 
