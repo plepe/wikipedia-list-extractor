@@ -14,7 +14,7 @@ const expected = {
   Achau: JSON.parse(fs.readFileSync('test/data/processed/Achau.json'))
 }
 
-const def = JSON.parse(fs.readFileSync('test/def.json'))
+const def = JSON.parse(fs.readFileSync('test/def.json')).sources[0]
 
 describe('parseProcessedPage', () => {
   it('should return something', () => {
