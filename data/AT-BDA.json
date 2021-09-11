@@ -9,7 +9,7 @@
     "sources": [
         {
             "language": "de",
-            "source": "de.wikipedia.org",
+            "source": "https://de.wikipedia.org",
             "template": "Denkmalliste Österreich Tabellenzeile",
             "templateIdField": "ObjektID",
             "pageTitleMatch": "Liste der denkmalgeschützten Objekte in",

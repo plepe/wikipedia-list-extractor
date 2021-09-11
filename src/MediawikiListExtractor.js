@@ -16,7 +16,7 @@ class MediawikiListExtractor {
   }
 
   loadSource (param, callback) {
-    let url = 'https://' + param.source + '/w/api.php?action=parse&format=json&prop=wikitext&page=' + encodeURIComponent(param.title)
+    let url = param.source + '/w/api.php?action=parse&format=json&prop=wikitext&page=' + encodeURIComponent(param.title)
     if (this.options.proxy) {
       url = this.options.proxy + 'source=' + encodeURIComponent(param.source) + '&wikitext=' + encodeURIComponent(param.title)
     }
@@ -30,7 +30,7 @@ class MediawikiListExtractor {
   }
 
   loadPage (param, callback) {
-    let url = 'https://' + param.source + '/wiki/' + encodeURIComponent(param.title)
+    let url = param.source + '/wiki/' + encodeURIComponent(param.title)
     if (this.options.proxy) {
       url = this.options.proxy + 'source=' + encodeURIComponent(param.source) + '&page=' + encodeURIComponent(param.title)
     }
@@ -52,7 +52,7 @@ class MediawikiListExtractor {
     items.forEach((item, index) => {
       const id = processedItemGetId(source, item, page, index)
 
-      let url = 'https://' + source.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
+      let url = source.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
 
       if (id) {
         url += '#' + id
@@ -205,7 +205,7 @@ class MediawikiListExtractor {
       search += 'intitle:/' + source.pageTitleMatch + '/ '
     }
 
-    let url = 'https://' + source.source + '/w/index.php?search=' + encodeURIComponent(search)
+    let url = source.source + '/w/index.php?search=' + encodeURIComponent(search)
     if (this.options.proxy) {
       url = this.options.proxy + 'source=' + encodeURIComponent(source.source) + '&search=' + encodeURIComponent(search)
     }
