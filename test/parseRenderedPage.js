@@ -14,11 +14,11 @@ const expected = {
   Achau: JSON.parse(fs.readFileSync('test/data/rendered/Achau.json'))
 }
 
-const def = JSON.parse(fs.readFileSync('test/def.json')).sources[0]
+const def = JSON.parse(fs.readFileSync('test/def.json'))
 
 describe('parseRenderedPage', () => {
   it('should return something', () => {
-    const result = parseRenderedPage(def, inputs.Achau)
+    const result = parseRenderedPage(def.param, inputs.Achau)
     assert.equal(result.length, expected.Achau.length, 'Same amount of items')
 
     for (let i = 0; i < result.length; i++) {

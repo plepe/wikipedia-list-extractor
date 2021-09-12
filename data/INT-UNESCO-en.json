@@ -1,0 +1,27 @@
+{
+    "openstreetmap-tag": "ref:whc",
+    "title": {
+        "de": "UNESCO Welterbe"
+    },
+    "organisation": {
+        "de": "UNESCO"
+    },
+    "param": {
+        "language": "en",
+        "source": "https://en.wikipedia.org",
+        "searchIdPrefix": "url=https:\\/\\/whc.unesco.org\\/en\\/list\\/",
+        "pageTitleMatch": "List of World Heritage Sites in",
+        "renderedTableClass": "wikitable",
+        "renderedIdInCiteURL": "^https:\/\/whc.unesco.org\/en\/list\/(.*)$",
+        "renderedFields": {
+            "image": {
+                "column": 1,
+                "type": "image"
+            },
+            "description": {
+                "column": 5,
+                "type": "html"
+            }
+        }
+    }
+}

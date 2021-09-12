@@ -12,6 +12,7 @@ class MediawikiListExtractor {
   constructor (id, def, options = {}) {
     this.id = id
     this.def = def
+    this.param = def.param
     this.cache = {}
     this.pageCache = {}
     this.options = options
@@ -42,19 +43,19 @@ class MediawikiListExtractor {
       .then(body => callback(null, body))
   }
 
-  parsePage (source, page, body) {
+  parsePage (page, body) {
     if (!(page in this.pageCache)) {
       this.pageCache[page] = {}
     }
 
-    const items = parseRenderedPage(source, body)
+    const items = parseRenderedPage(this.param, body)
 
     this.pageCache[page].rendered = []
 
     items.forEach((item, index) => {
-      const id = renderedItemGetId(source, item, page, index)
+      const id = renderedItemGetId(this.param, item, page, index)
 
-      let url = source.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
+      let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
 
       if (id) {
         url += '#' + id
@@ -75,19 +76,19 @@ class MediawikiListExtractor {
     return this.pageCache[page].rendered
   }
 
-  loadRendered (page, source, callback) {
-    this.loadPage({ title: page, source: source.source },
+  loadRendered (page, callback) {
+    this.loadPage({ title: page, source: this.param.source },
       (err, body) => {
         if (err) { return callback(err) }
 
-        const result = this.parsePage(source, page, body)
+        const result = this.parsePage(page, body)
 
         callback(null, result)
       }
     )
   }
 
-  loadRaw (page, source, callback) {
+  loadRaw (page, callback) {
     let result = []
 
     if (!(page in this.pageCache)) {
@@ -96,15 +97,15 @@ class MediawikiListExtractor {
 
     this.pageCache[page].raw = []
 
-    this.loadSource({ title: page, source: source.source },
+    this.loadSource({ title: page, source: this.param.source },
       (err, wikitext) => {
         if (err) { return callback(err) }
 
         this.pageCache[page].wikitext = wikitext
 
-        const items = parseMediawikiTemplate(wikitext, source.template)
+        const items = parseMediawikiTemplate(wikitext, this.param.template)
         items.forEach(raw => {
-          const id = raw[source.rawIdField]
+          const id = raw[this.param.rawIdField]
 
           if (id) {
             if (id in this.cache) {
@@ -138,15 +139,13 @@ class MediawikiListExtractor {
       options = {}
     }
 
-    const source = this.def.sources[0]
-
     const functions = {}
     if (!('loadRendered' in options) || options.loadRendered) {
-      functions.rendered = done => this.loadRendered(page, source, done)
+      functions.rendered = done => this.loadRendered(page, done)
     }
 
     if (!('loadRaw' in options) || options.loadRaw) {
-      functions.raw = done => this.loadRaw(page, source, done)
+      functions.raw = done => this.loadRaw(page, done)
     }
 
     async.parallel(functions,
@@ -186,7 +185,6 @@ class MediawikiListExtractor {
       options = {}
     }
 
-    const source = this.def.sources[0]
     const result = {}
 
     ids = ids.filter(id => {
@@ -206,7 +204,7 @@ class MediawikiListExtractor {
       return callback(null, result)
     }
 
-    findPagesForIds (source, ids, this.options, (err, pages) => {
+    findPagesForIds (this.param, ids, this.options, (err, pages) => {
       if (err) { return callback(err) }
 
       if (!pages.length) {

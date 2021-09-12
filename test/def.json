@@ -6,43 +6,42 @@
     "organisation": {
         "de": "Bundesdenkmalamt Österreich"
     },
-    "sources": [
-        {
-            "language": "de",
-            "source": "https://de.wikipedia.org",
-            "template": "Denkmalliste Österreich Tabellenzeile",
-            "templateIdField": "ObjektID",
-            "pageTitleMatch": "Liste der denkmalgeschützten Objekte in",
-            "renderedTableClass": "Denkmalliste-Tabelle",
-            "renderedIdField": "object-id",
-            "renderedFields": {
-                "object-id": {
-                    "column": 2,
-                    "type": "html",
-                    "regexp": "/Objekt-ID:<\\/span>&nbsp;([0-9]+)<\\/div>/"
-                },
-                "title": {
-                    "column": 2,
-                    "type": "html",
-                    "regexp": "/^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m"
-                },
-                "commons-category": {
-                    "column": 1,
-                    "type": "html",
-                    "domQuery": "a",
-                    "domAttribute": "href",
-                    "1replaceOld": "/<a href=\"https:\/\/commons.wikimedia.org\/wiki/Category:([^\"]*)\".*/m",
-                    "replaceNew": "$1"
-                },
-                "image": {
-                    "column": 0,
-                    "type": "image"
-                },
-                "description": {
-                    "column": 4,
-                    "type": "html"
-                }
+    "param": {
+        "language": "de",
+        "source": "https://de.wikipedia.org",
+        "template": "Denkmalliste Österreich Tabellenzeile",
+        "templateIdField": "ObjektID",
+        "pageTitleMatch": "Liste der denkmalgeschützten Objekte in",
+        "rawIdField": "ObjektID",
+        "renderedTableClass": "Denkmalliste-Tabelle",
+        "renderedIdField": "object-id",
+        "renderedFields": {
+            "object-id": {
+                "column": 2,
+                "type": "html",
+                "regexp": "/Objekt-ID:<\\/span>&nbsp;([0-9]+)<\\/div>/"
+            },
+            "title": {
+                "column": 2,
+                "type": "html",
+                "regexp": "/^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m"
+            },
+            "commons-category": {
+                "column": 1,
+                "type": "html",
+                "domQuery": "a",
+                "domAttribute": "href",
+                "1replaceOld": "/<a href=\"https:\/\/commons.wikimedia.org\/wiki/Category:([^\"]*)\".*/m",
+                "replaceNew": "$1"
+            },
+            "image": {
+                "column": 0,
+                "type": "image"
+            },
+            "description": {
+                "column": 4,
+                "type": "html"
             }
         }
-    ]
+    }
 }
