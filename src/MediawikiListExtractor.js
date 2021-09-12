@@ -49,7 +49,7 @@ class MediawikiListExtractor {
 
     const items = parseProcessedPage(source, body)
 
-    this.pageCache[page].processed = {}
+    this.pageCache[page].processed = []
 
     items.forEach((item, index) => {
       const id = processedItemGetId(source, item, page, index)
@@ -69,7 +69,7 @@ class MediawikiListExtractor {
         }
       }
 
-      this.pageCache[page].processed[id] = item
+      this.pageCache[page].processed.push(id)
     })
 
     return this.pageCache[page].processed
@@ -88,13 +88,13 @@ class MediawikiListExtractor {
   }
 
   loadRaw (page, source, callback) {
-    let result = {}
+    let result = []
 
     if (!(page in this.pageCache)) {
       this.pageCache[page] = {}
     }
 
-    this.pageCache[page].raw = {}
+    this.pageCache[page].raw = []
 
     this.loadSource({ title: page, source: source.source },
       (err, wikitext) => {
@@ -113,7 +113,7 @@ class MediawikiListExtractor {
               this.cache[id] = { id, page, raw }
             }
 
-            this.pageCache[page].raw[id] = raw
+            this.pageCache[page].raw.push(id)
           }
         })
 
@@ -131,6 +131,8 @@ class MediawikiListExtractor {
    * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
    */
   getPageItems (page, options, callback) {
+    const result = {}
+
     if (typeof options === 'function') {
       callback = options
       options = {}
@@ -149,7 +151,19 @@ class MediawikiListExtractor {
 
     async.parallel(functions,
       (err, {processed, raw}) => {
-        callback()
+        if (processed) {
+          processed.forEach(id => {
+            result[id] = this.cache[id]
+          })
+        }
+
+        if (raw) {
+          raw.forEach(id => {
+            result[id] = this.cache[id]
+          })
+        }
+
+        callback(err, result)
       }
     )
   }
