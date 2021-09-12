@@ -1,5 +1,6 @@
 const parseMediawikiTemplate = require('parse-mediawiki-template')
 const async = {
+  eachSeries: require('async/eachSeries'),
   parallel: require('async/parallel')
 }
 
@@ -148,7 +149,7 @@ class MediawikiListExtractor {
 
     async.parallel(functions,
       (err, {processed, raw}) => {
-        console.log(processed, raw)
+        callback()
       }
     )
   }
@@ -192,42 +193,32 @@ class MediawikiListExtractor {
     }
 
     findPagesForIds (source, ids, this.options, (err, pages) => {
-      if (err) {
-        return callback(err)
-      }
+      if (err) { return callback(err) }
 
       if (!pages.length) {
         return callback(null, result)
       }
 
-      const page = pages[0]
-
-      const functions = []
-      if (!('loadProcessed' in options) || options.loadProcessed) {
-        functions.push(done => this.loadProcessed(page, source, done))
-      }
-
-      if (!('loadRaw' in options) || options.loadRaw) {
-        functions.push(done => this.loadRaw(page, source, done))
-      }
-
-      async.parallel(functions, (err) => {
-        if (err) {
-          return callback(err)
+      async.eachSeries(pages, (page, done) => {
+        if (ids.length === 0) {
+          return done()
         }
 
-        options.forceCache = true
-
-        this.get(ids, options, (err, r) => {
+        this.getPageItems(page, options, (err, items) => {
           if (err) { return callback(err) }
 
-          for (const k in r) {
-            result[k] = r[k]
-          }
+          ids = ids.filter(id => {
+            if (id in this.cache) {
+              result[id] = this.cache[id]
+              return false
+            } else {
+              return true
+            }
+          })
 
-          callback(null, result)
+          done()
         })
-      })
+      }, (err) => callback(err, result))
     })
   }
 }
