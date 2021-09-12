@@ -2,6 +2,8 @@ const fs = require('fs')
 const http = require('http')
 const md5 = require('md5')
 
+const apiHandle = require('../../src/apiHandle')
+
 module.exports = class FakeServer {
   constructor (conf) {
     this.conf = conf
@@ -47,6 +49,20 @@ module.exports = class FakeServer {
   }
 
   requestListener (req, res) {
+    if (req.url.match(/^\/api\//)) {
+      return apiHandle(req.url, (err, result) => {
+        if (err) {
+          res.writeHead(500)
+          res.end('Internal server error')
+          return console.error(err)
+        }
+
+        res.setHeader('Content-Type', 'application/json')
+        res.writeHead(200)
+        res.end(JSON.stringify(result, null, '  '))
+      })
+    }
+
     this.loadOriginalFile(req.url,
       (err, result) => {
         if (err) {
