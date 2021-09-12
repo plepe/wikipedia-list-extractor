@@ -104,7 +104,7 @@ class MediawikiListExtractor {
 
         const items = parseMediawikiTemplate(wikitext, source.template)
         items.forEach(raw => {
-          const id = raw.ObjektID
+          const id = raw[source.rawIdField]
 
           if (id) {
             if (id in this.cache) {
