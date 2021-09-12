@@ -5,7 +5,7 @@ const async = {
 
 const parseProcessedPage = require('./parseProcessedPage')
 const processedItemGetId = require('./processedItemGetId')
-const findPageForIds = require('./findPageForIds')
+const findPagesForIds = require('./findPagesForIds')
 
 class MediawikiListExtractor {
   constructor (id, def, options = {}) {
@@ -191,14 +191,16 @@ class MediawikiListExtractor {
       return callback(null, result)
     }
 
-    findPageForIds (source, ids, this.options, (err, page) => {
+    findPagesForIds (source, ids, this.options, (err, pages) => {
       if (err) {
         return callback(err)
       }
 
-      if (!page) {
+      if (!pages.length) {
         return callback(null, result)
       }
+
+      const page = pages[0]
 
       const functions = []
       if (!('loadProcessed' in options) || options.loadProcessed) {

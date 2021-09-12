@@ -26,13 +26,11 @@ module.exports = function findPageForIds (source, ids, options, callback) {
       dom.innerHTML = body
       const articles = dom.querySelectorAll('li.mw-search-result > div > a')
 
-      if (!articles.length) {
-        return callback(null, null)
-      }
+      const result = Array.from(articles).map(
+        article => article.getAttribute('title')
+      )
 
-      const page = articles[0].getAttribute('title')
-
-      callback(null, page)
+      callback(null, result)
     }
   )
 }
