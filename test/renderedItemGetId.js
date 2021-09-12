@@ -2,13 +2,13 @@
 
 const assert = require('assert').strict
 
-const processedItemGetId = require('../src/processedItemGetId')
+const renderedItemGetId = require('../src/renderedItemGetId')
 
-describe('processedItemGetId', () => {
+describe('renderedItemGetId', () => {
   it('type "renderedIdField"', () => {
     const expected = '1234'
 
-    const result = processedItemGetId(
+    const result = renderedItemGetId(
       { renderedIdField: 'foo' },
       { foo: '1234', bar: 'test' }
     )

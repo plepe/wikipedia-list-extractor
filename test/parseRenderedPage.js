@@ -4,21 +4,21 @@ require('../node')
 const assert = require('assert').strict
 const fs = require('fs')
 
-const parseProcessedPage = require('../src/parseProcessedPage')
+const parseRenderedPage = require('../src/parseRenderedPage')
 
 const inputs = {
-  Achau: fs.readFileSync('test/data/processed/Achau.html')// .toString()
+  Achau: fs.readFileSync('test/data/rendered/Achau.html')// .toString()
 }
 
 const expected = {
-  Achau: JSON.parse(fs.readFileSync('test/data/processed/Achau.json'))
+  Achau: JSON.parse(fs.readFileSync('test/data/rendered/Achau.json'))
 }
 
 const def = JSON.parse(fs.readFileSync('test/def.json')).sources[0]
 
-describe('parseProcessedPage', () => {
+describe('parseRenderedPage', () => {
   it('should return something', () => {
-    const result = parseProcessedPage(def, inputs.Achau)
+    const result = parseRenderedPage(def, inputs.Achau)
     assert.equal(result.length, expected.Achau.length, 'Same amount of items')
 
     for (let i = 0; i < result.length; i++) {

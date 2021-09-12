@@ -4,8 +4,8 @@ const async = {
   parallel: require('async/parallel')
 }
 
-const parseProcessedPage = require('./parseProcessedPage')
-const processedItemGetId = require('./processedItemGetId')
+const parseRenderedPage = require('./parseRenderedPage')
+const renderedItemGetId = require('./renderedItemGetId')
 const findPagesForIds = require('./findPagesForIds')
 
 class MediawikiListExtractor {
@@ -47,12 +47,12 @@ class MediawikiListExtractor {
       this.pageCache[page] = {}
     }
 
-    const items = parseProcessedPage(source, body)
+    const items = parseRenderedPage(source, body)
 
-    this.pageCache[page].processed = []
+    this.pageCache[page].rendered = []
 
     items.forEach((item, index) => {
-      const id = processedItemGetId(source, item, page, index)
+      const id = renderedItemGetId(source, item, page, index)
 
       let url = source.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
 
@@ -63,19 +63,19 @@ class MediawikiListExtractor {
       if (id) {
         if (id in this.cache) {
           this.cache[id].url = url
-          this.cache[id].processed = item
+          this.cache[id].rendered = item
         } else {
-          this.cache[id] = { id, page, url, processed: item }
+          this.cache[id] = { id, page, url, rendered: item }
         }
       }
 
-      this.pageCache[page].processed.push(id)
+      this.pageCache[page].rendered.push(id)
     })
 
-    return this.pageCache[page].processed
+    return this.pageCache[page].rendered
   }
 
-  loadProcessed (page, source, callback) {
+  loadRendered (page, source, callback) {
     this.loadPage({ title: page, source: source.source },
       (err, body) => {
         if (err) { return callback(err) }
@@ -126,7 +126,7 @@ class MediawikiListExtractor {
    * Load all items on the specified wikipedia page
    * @param {string} page - Title of the page
    * @param {object} options - Options
-   * @param {boolean} [options.loadProcessed=true] - load processed data
+   * @param {boolean} [options.loadRendered=true] - load rendered data
    * @param {boolean} [options.loadRaw=true] - load raw data
    * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
    */
@@ -141,8 +141,8 @@ class MediawikiListExtractor {
     const source = this.def.sources[0]
 
     const functions = {}
-    if (!('loadProcessed' in options) || options.loadProcessed) {
-      functions.processed = done => this.loadProcessed(page, source, done)
+    if (!('loadRendered' in options) || options.loadRendered) {
+      functions.rendered = done => this.loadRendered(page, source, done)
     }
 
     if (!('loadRaw' in options) || options.loadRaw) {
@@ -150,9 +150,9 @@ class MediawikiListExtractor {
     }
 
     async.parallel(functions,
-      (err, {processed, raw}) => {
-        if (processed) {
-          processed.forEach(id => {
+      (err, {rendered, raw}) => {
+        if (rendered) {
+          rendered.forEach(id => {
             result[id] = this.cache[id]
           })
         }
@@ -172,7 +172,7 @@ class MediawikiListExtractor {
    * @param {string|string[]} ids - Id or list of ids to load
    * @param {object} options - Options
    * @param {boolean} options.forceCache - check only cached information
-   * @param {boolean} [options.loadProcessed=true] - load processed data
+   * @param {boolean} [options.loadRendered=true] - load rendered data
    * @param {boolean} [options.loadRaw=true] - load raw data
    * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
    */
