@@ -4,27 +4,11 @@ const path = require('path')
 const queryString = require('query-string')
 
 const proxy = require('./proxy/index.js')
-const MediawikiListExtractor = require('./src/MediawikiListExtractor.js')
+const loadExtractor = require('./src/loadExtractor')
 
 require('./node')
 
-const extractors = {}
 const options = {}
-
-function loadExtractor (id, callback) {
-  if (extractors[id]) {
-    return callback(null, extractors[id])
-  }
-
-  fs.readFile('data/' + id + '.json', (err, def) => {
-    if (err) { return callback(err) }
-
-    def = JSON.parse(def)
-
-    extractors[id] = new MediawikiListExtractor(id, def, options)
-    callback(null, extractors[id])
-  })
-}
 
 const files = [
   '/dist/app.js',
