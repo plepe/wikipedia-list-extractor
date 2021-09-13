@@ -5,7 +5,7 @@ const queryString = require('query-string')
 const loadExtractor = require('./loadExtractor')
 
 module.exports = function apiHandle (url, callback) {
-  const m = url.match(/^\/api\/([A-Z-]*)\/([^?]+)(\?.*|)$/)
+  const m = url.match(/^\/api\/([A-Z-]*)\/([^?]+)(\?.*|)$/i)
   if (m) {
     const listId = m[1]
     const ids = m[2].split(/,/g)
@@ -13,23 +13,10 @@ module.exports = function apiHandle (url, callback) {
 
     loadExtractor(listId, (err, extractor) => {
       if (err) {
-        res.writeHead(500)
-        res.end()
-        return console.error(err)
+        return callback(err)
       }
 
-      extractor.get(ids, (err, result) => {
-        if (err) {
-          console.error(err)
-          res.writeHead(500)
-          res.end(err)
-          return
-        }
-
-        res.setHeader('Content-Type', 'application/json')
-        res.writeHead(200)
-        res.end(JSON.stringify(result, null, '    '))
-      })
+      extractor.get(ids, callback)
     })
 
     return

@@ -4,6 +4,7 @@ const fs = require('fs')
 const assert = require('assert').strict
 
 const ApiServer = require('./src/FakeServer')
+const loadExtractor = require('../src/loadExtractor')
 const MediawikiListExtractorClient = require('../src/Client')
 
 const conf = JSON.parse(fs.readFileSync('test/conf.json'))
@@ -20,8 +21,11 @@ describe('MediawikiListExtractor/Client', () => {
     apiServer.start(done)
   })
 
-  it('initialize extractor', () => {
-    wikipediaList = new MediawikiListExtractorClient('AT-BDA', {serverUrl: conf.url})
+  it('initialize extractor', (done) => {
+    loadExtractor('test', def, () => {
+      wikipediaList = new MediawikiListExtractorClient('test', {serverUrl: conf.url})
+      done()
+    })
   })
 
   it('search a existing id', (done) => {
