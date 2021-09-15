@@ -31,8 +31,8 @@ describe('MediawikiListExtractor/Client', () => {
   it('search a existing id', (done) => {
     wikipediaList.get(['126450'], {},
       (err, result) => {
-        assert.equal(Object.keys(result).length, 1, 'should return one result')
-        assert.equal(result['126450'].id, '126450')
+        assert.equal(result.length, 1, 'should return one result')
+        assert.equal(result[0].id, '126450')
 
         done()
       }
@@ -43,8 +43,8 @@ describe('MediawikiListExtractor/Client', () => {
   it('search all elements of a page', (done) => {
     wikipediaList.getPageItems('Liste der denkmalgeschützten Objekte in Achau', {},
       (err, result) => {
-        assert.equal(Object.keys(result).length, 9, 'should return 9 results')
-        assert.equal(result['126450'].id, '126450')
+        assert.equal(result.length, 9, 'should return 9 results')
+        assert.equal(result[0].id, '126450')
 
         done()
       }

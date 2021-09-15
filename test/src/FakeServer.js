@@ -49,6 +49,7 @@ module.exports = class FakeServer {
   }
 
   requestListener (req, res) {
+    console.log(req.url)
     if (req.url.match(/^\/api\//)) {
       return apiHandle(req.url, (err, result) => {
         if (err) {

@@ -129,10 +129,10 @@ class MediawikiListExtractor {
    * @param {object} options - Options
    * @param {boolean} [options.loadRendered=true] - load rendered data
    * @param {boolean} [options.loadRaw=true] - load raw data
-   * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
+   * @param {function} callback - Callback function which will be called with (err, result), where result is an unordered array of all items.
    */
   getPageItems (page, options, callback) {
-    const result = {}
+    const result = []
 
     if (typeof options === 'function') {
       callback = options
@@ -152,13 +152,15 @@ class MediawikiListExtractor {
       (err, {rendered, raw}) => {
         if (rendered) {
           rendered.forEach(id => {
-            result[id] = this.cache[id]
+            result.push(this.cache[id])
           })
         }
 
         if (raw) {
           raw.forEach(id => {
-            result[id] = this.cache[id]
+            if (!result.includes(this.cache[id])) {
+              result.push(this.cache[id])
+            }
           })
         }
 
@@ -173,7 +175,7 @@ class MediawikiListExtractor {
    * @param {boolean} options.forceCache - check only cached information
    * @param {boolean} [options.loadRendered=true] - load rendered data
    * @param {boolean} [options.loadRaw=true] - load raw data
-   * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
+   * @param {function} callback - Callback function which will be called with (err, result), where result is an unordered array of all items.
    */
   get (ids, options, callback) {
     if (!Array.isArray(ids)) {
@@ -185,11 +187,11 @@ class MediawikiListExtractor {
       options = {}
     }
 
-    const result = {}
+    const result = []
 
     ids = ids.filter(id => {
       if (id in this.cache) {
-        result[id] = this.cache[id]
+        result.push(this.cache[id])
         return false
       } else {
         return true
@@ -221,7 +223,7 @@ class MediawikiListExtractor {
 
           ids = ids.filter(id => {
             if (id in this.cache) {
-              result[id] = this.cache[id]
+              result.push(this.cache[id])
               return false
             } else {
               return true
