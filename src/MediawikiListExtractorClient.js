@@ -13,6 +13,15 @@ module.exports = class MediawikiListExtractorClient {
    * @param {function} callback - Callback function which will be called with (err, result), where result is an object with {id1: ..., id2: ...}
    */
   get (ids, options = {}, callback) {
+    if (typeof options === 'function') {
+      callback = options
+      options = {}
+    }
+
+    if (!Array.isArray(ids)) {
+      ids = [ids]
+    }
+
     global.fetch(
       this.options.serverUrl + '/api/' + this.id + '/' + ids.join(',')
     )

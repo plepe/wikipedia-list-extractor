@@ -5,7 +5,7 @@ const assert = require('assert').strict
 
 const ApiServer = require('./src/FakeServer')
 const loadExtractor = require('../src/loadExtractor')
-const MediawikiListExtractorClient = require('../src/Client')
+const MediawikiListExtractorClient = require('../src/MediawikiListExtractorClient')
 
 const conf = JSON.parse(fs.readFileSync('test/conf.json'))
 const def = JSON.parse(fs.readFileSync('test/def.json'))
