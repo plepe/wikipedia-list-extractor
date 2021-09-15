@@ -18,7 +18,5 @@ module.exports = function apiHandle (url, callback) {
 
       extractor.get(ids, callback)
     })
-
-    return
   }
 }

@@ -4,7 +4,7 @@ const path = require('path')
 const queryString = require('query-string')
 
 const proxy = require('./proxy/index.js')
-const loadExtractor = require('./src/loadExtractor')
+const apiHandle = require('./src/apiHandle')
 
 require('./node')
 
@@ -69,20 +69,10 @@ function requestListener (req, res) {
     })
   }
 
-  m = req.url.match(/\/api\/([A-Z-]*)\/([^?]+)(\?.*|)$/)
+  m = req.url.match(/^\/api\//)
   if (m) {
-    const listId = m[1]
-    const ids = m[2].split(/,/g)
-    const param = queryString.parse(m[3])
-
-    loadExtractor(listId, (err, extractor) => {
-      if (err) {
-        res.writeHead(500)
-        res.end()
-        return console.error(err)
-      }
-
-      extractor.get(ids, (err, result) => {
+    return apiHandle(req.url,
+      (err, result) => {
         if (err) {
           console.error(err)
           res.writeHead(500)
@@ -93,10 +83,8 @@ function requestListener (req, res) {
         res.setHeader('Content-Type', 'application/json')
         res.writeHead(200)
         res.end(JSON.stringify(result, null, '    '))
-      })
-    })
-
-    return
+      }
+    )
   }
 
   if (!file) {
