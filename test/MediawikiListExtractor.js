@@ -14,17 +14,17 @@ def.param.source = conf.url
 let fakeServer
 let wikipediaList
 
-describe('MediawikiListExtractor', () => {
-  it('start fake wikipedia server', (done) => {
+describe('MediawikiListExtractor', function () {
+  it('start fake wikipedia server', function (done) {
     fakeServer = new FakeServer(conf)
     fakeServer.start(done)
   })
 
-  it('initialize extractor', () => {
+  it('initialize extractor', function () {
     wikipediaList = new MediawikiListExtractor('AT-BDA', def)
   })
 
-  it('search an existing id', (done) => {
+  it('search an existing id', function (done) {
     wikipediaList.get(['126450'], {},
       (err, result) => {
         assert.equal(result.length, 1, 'should return one result')
@@ -35,7 +35,7 @@ describe('MediawikiListExtractor', () => {
     )
   })
 
-  it('search all elements of a page', (done) => {
+  it('search all elements of a page', function (done) {
     wikipediaList.getPageItems('Liste der denkmalgeschützten Objekte in Achau', {},
       (err, result) => {
         assert.equal(result.length, 9, 'should return 9 results')
@@ -46,7 +46,7 @@ describe('MediawikiListExtractor', () => {
     )
   })
 
-  it('stop fake wikipedia server', (done) => {
+  it('stop fake wikipedia server', function (done) {
     fakeServer.stop(done)
   })
 })

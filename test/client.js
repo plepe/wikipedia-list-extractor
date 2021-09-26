@@ -15,20 +15,20 @@ def.param.source = conf.url
 let apiServer
 let wikipediaList
 
-describe('MediawikiListExtractor/Client', () => {
-  it('start api server', (done) => {
+describe('MediawikiListExtractor/Client', function () {
+  it('start api server', function (done) {
     apiServer = new ApiServer(conf)
     apiServer.start(done)
   })
 
-  it('initialize extractor', (done) => {
-    loadExtractor('test', def, () => {
+  it('initialize extractor', function (done) {
+    loadExtractor('test', def, function () {
       wikipediaList = new MediawikiListExtractorClient('test', {serverUrl: conf.url})
       done()
     })
   })
 
-  it('search a existing id', (done) => {
+  it('search a existing id', function (done) {
     wikipediaList.get(['126450'], {},
       (err, result) => {
         assert.equal(result.length, 1, 'should return one result')
@@ -40,7 +40,7 @@ describe('MediawikiListExtractor/Client', () => {
   })
 
   /*
-  it('search all elements of a page', (done) => {
+  it('search all elements of a page', function (done) {
     wikipediaList.getPageItems('Liste der denkmalgeschützten Objekte in Achau', {},
       (err, result) => {
         assert.equal(result.length, 9, 'should return 9 results')
@@ -52,7 +52,7 @@ describe('MediawikiListExtractor/Client', () => {
   })
   */
 
-  it('stop api wikipedia server', (done) => {
+  it('stop api wikipedia server', function (done) {
     apiServer.stop(done)
   })
 })

@@ -16,8 +16,8 @@ const expected = {
 
 const def = JSON.parse(fs.readFileSync('test/def.json'))
 
-describe('parseRenderedPage', () => {
-  it('should return something', () => {
+describe('parseRenderedPage', function () {
+  it('should return something', function () {
     const result = parseRenderedPage(def.param, inputs.Achau)
     assert.equal(result.length, expected.Achau.length, 'Same amount of items')
 

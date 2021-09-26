@@ -13,14 +13,14 @@ def.param.source = conf.url
 
 let fakeServer
 
-describe('findPagesForIds()', () => {
-  it('start fake wikipedia server', (done) => {
+describe('findPagesForIds()', function () {
+  it('start fake wikipedia server', function (done) {
     fakeServer = new FakeServer(conf)
     fakeServer.start(done)
   })
 
 
-  it('search for a page for an existing id', (done) => {
+  it('search for a page for an existing id', function (done) {
     findPagesForIds(def.param, ['126450'], {},
       (err, result) => {
         assert.deepEqual(result, ['Liste der denkmalgeschützten Objekte in Achau'])
@@ -29,7 +29,7 @@ describe('findPagesForIds()', () => {
     )
   })
 
-  it('search for a page for a non-existing id', (done) => {
+  it('search for a page for a non-existing id', function (done) {
     findPagesForIds(def.param, ['1234'], {},
       (err, result) => {
         assert.deepEqual(result, [])
@@ -38,7 +38,7 @@ describe('findPagesForIds()', () => {
     )
   })
 
-  it('search for a page for several ids', (done) => {
+  it('search for a page for several ids', function (done) {
     findPagesForIds(def.param, ['126450', '1234', '18831'], {},
       (err, result) => {
         assert.deepEqual(result, ['Liste der denkmalgeschützten Objekte in Absam', 'Liste der denkmalgeschützten Objekte in Achau'])
@@ -47,7 +47,7 @@ describe('findPagesForIds()', () => {
     )
   })
 
-  it('stop fake wikipedia server', (done) => {
+  it('stop fake wikipedia server', function (done) {
     fakeServer.stop(done)
   })
 })
