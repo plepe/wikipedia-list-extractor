@@ -60,4 +60,15 @@ describe('wikidata', function () {
       }
     )
   })
+
+  it('P9154=24536, dewiki, commons', function (done) {
+    wikidata.query(
+      {'P9154': '24536'},
+      {articles:['dewiki', 'commons']},
+      (err, result) => {
+        assert.deepEqual(result, {"Q1534177":{"dewiki":{"type":"uri","value":"https://de.wikipedia.org/wiki/Goethedenkmal_(Wien)"},"commons":{"type":"uri","value":"https://commons.wikimedia.org/wiki/Category:Goethe_monument,_Vienna"}}})
+        done()
+      }
+    )
+  })
 })

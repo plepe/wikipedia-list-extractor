@@ -45,6 +45,23 @@ function wikidataQuery (query, options={}, callback) {
     })
   }
 
+  if (options.articles) {
+    options.articles.forEach(article => {
+      let url
+
+      let m = article.match(/^([a-z]+)wiki$/)
+      if (article === 'commons') {
+        url = 'https://commons.wikimedia.org/'
+      } else if (m) {
+        url = 'https://' + m[1] + '.wikipedia.org/'
+      }
+
+      where.push('OPTIONAL {?' + article + ' schema:about ?item. ?' + article + ' schema:isPartOf <' + url + '>.}')
+      select.push('?' + article)
+      group_by.push('?' + article)
+    })
+  }
+
   const str = 'SELECT ' + select.join(' ') + ' WHERE {' + where.join(' ') + services.join(' ') + '}' + (group_by.length ? ' GROUP BY ' + group_by.join(' ') : '')
 
   //console.log(str)
@@ -92,31 +109,17 @@ function wikidataQuery (query, options={}, callback) {
           })
         }
 
+        if (options.articles) {
+          options.articles.forEach(article => {
+            _item[article] = item[article]
+          })
+        }
+
         data[id] = _item
       })
 
       callback(null, data)
     })
-/*
-    (err, result) => {
-      next(options)
-      if (err) { return callback(err) }
-
-      async.map(result.body.results.bindings,
-        (entry, done) => {
-          const wikidataId = entry.item.value.match(/(Q[0-9]+)$/)[1]
-          request(
-            { key: 'id', id: wikidataId },
-            (err, r) => done(err, r.length ? r[0] : null)
-          )
-        },
-        (err, results) => {
-          callback(err, results)
-        }
-      )
-    }
-  )
-*/
 }
 
 module.exports = {
