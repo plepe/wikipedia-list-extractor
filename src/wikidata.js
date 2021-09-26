@@ -4,6 +4,11 @@ function wikidataQuery (query, options={}, callback) {
     options = {}
   }
 
+  str = wikidataCompile(query, options)
+  wikidataRun(str, options, callback)
+}
+
+function wikidataCompile (query, options={}) {
   let select = ['?item']
   let where = []
   let services = []
@@ -66,6 +71,10 @@ function wikidataQuery (query, options={}, callback) {
 
   //console.log(str)
 
+  return str
+}
+
+function wikidataRun(str, options, callback) {
   global.fetch('https://query.wikidata.org/sparql?query=' + encodeURIComponent(str),
     {
       headers: {
@@ -122,6 +131,9 @@ function wikidataQuery (query, options={}, callback) {
     })
 }
 
+
 module.exports = {
-  query: wikidataQuery
+  query: wikidataQuery,
+  compile: wikidataCompile,
+  run: wikidataRun
 }
