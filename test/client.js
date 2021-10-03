@@ -23,7 +23,7 @@ describe('MediawikiListExtractor/Client', function () {
 
   it('initialize extractor', function (done) {
     loadExtractor('test', def, function () {
-      wikipediaList = new MediawikiListExtractorClient('test', {serverUrl: conf.url})
+      wikipediaList = new MediawikiListExtractorClient('test', { serverUrl: conf.url })
       done()
     })
   })

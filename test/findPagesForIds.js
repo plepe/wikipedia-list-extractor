@@ -19,7 +19,6 @@ describe('findPagesForIds()', function () {
     fakeServer.start(done)
   })
 
-
   it('search for a page for an existing id', function (done) {
     findPagesForIds(def.param, ['126450'], {},
       (err, result) => {

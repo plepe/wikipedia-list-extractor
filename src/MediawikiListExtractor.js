@@ -94,14 +94,16 @@ class MediawikiListExtractor {
     const result = {}
     const wdMapping = {}
 
-    items.forEach(item => wdMapping[item[this.param.rawWikidataField]] = item)
+    items.forEach(item => {
+      wdMapping[item[this.param.rawWikidataField]] = item
+    })
 
-    let query = 'SELECT ?item ?idProp WHERE { ?item wdt:' + this.param.wikidataIdProperty + ' ?idProp. FILTER (?item in (' + items.map(item => 'wd:' + item[this.param.rawWikidataField]).join(', ') + '))}'
+    const query = 'SELECT ?item ?idProp WHERE { ?item wdt:' + this.param.wikidataIdProperty + ' ?idProp. FILTER (?item in (' + items.map(item => 'wd:' + item[this.param.rawWikidataField]).join(', ') + '))}'
 
-    wikidata.run(query, {properties:['idProp']}, (err, r) => {
+    wikidata.run(query, { properties: ['idProp'] }, (err, r) => {
       if (err) { return callback(err) }
 
-      for (let wdId in r) {
+      for (const wdId in r) {
         const id = r[wdId].idProp.values[0]
 
         result[id] = wdMapping[wdId]
@@ -114,14 +116,14 @@ class MediawikiListExtractor {
   getItemIdsFromField (items, callback) {
     const result = {}
 
-    items.forEach(item => result[item[this.param.templateIdField]] = item)
+    items.forEach(item => {
+      result[item[this.param.templateIdField]] = item
+    })
 
     callback(null, result)
   }
 
   loadRaw (page, callback) {
-    let result = []
-
     if (!(page in this.pageCache)) {
       this.pageCache[page] = {}
     }
@@ -141,7 +143,9 @@ class MediawikiListExtractor {
         }
 
         this[fun](items, (err, items) => {
-          for (let id in items) {
+          if (err) { return callback(err) }
+
+          for (const id in items) {
             const raw = items[id]
 
             if (id in this.cache) {
@@ -185,7 +189,7 @@ class MediawikiListExtractor {
     }
 
     async.parallel(functions,
-      (err, {rendered, raw}) => {
+      (err, { rendered, raw }) => {
         if (rendered) {
           rendered.forEach(id => {
             result.push(this.cache[id])
@@ -247,7 +251,7 @@ class MediawikiListExtractor {
       fun = findPagesForIdsWikidata
     }
 
-    fun (this.param, ids, this.options, (err, pages, mapping) => {
+    fun(this.param, ids, this.options, (err, pages, mapping) => {
       if (err) { return callback(err) }
 
       if (!pages.length) {

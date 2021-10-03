@@ -1,5 +1,3 @@
-const fs = require('fs')
-const http = require('http')
 const queryString = require('query-string')
 
 const loadExtractor = require('./loadExtractor')
@@ -16,7 +14,7 @@ module.exports = function apiHandle (url, callback) {
         return callback(err)
       }
 
-      extractor.get(ids, callback)
+      extractor.get(ids, param, callback)
     })
   }
 }

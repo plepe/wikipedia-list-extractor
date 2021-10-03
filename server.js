@@ -8,8 +8,6 @@ const apiHandle = require('./src/apiHandle')
 
 require('./node')
 
-const options = {}
-
 const files = [
   '/dist/app.js',
   '/index.html'

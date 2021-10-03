@@ -32,7 +32,5 @@ module.exports = function findPageForIds (source, ids, options, callback) {
 
       callback(null, result)
     }
-  )
+    )
 }
-
-

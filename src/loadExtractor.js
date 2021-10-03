@@ -10,7 +10,7 @@ const extractors = {}
  * @param {object} [def] - override definition; if not, load from file
  * @param {function} callback - return the loaded extractor: (err, extractor)
  */
-module.exports = function loadExtractor (id, def, callback=null) {
+module.exports = function loadExtractor (id, def, callback = null) {
   if (typeof def === 'function') {
     callback = def
     def = null

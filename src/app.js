@@ -28,7 +28,7 @@ window.onload = () => {
       div.innerHTML = body
 
       const as = div.getElementsByTagName('a')
-      const lists = Array.from(as).forEach(a => {
+      Array.from(as).forEach(a => {
         const m = a.getAttribute('href').match(/^([A-Z-]+)\.json$/)
         if (m) {
           const option = document.createElement('option')

@@ -1,26 +1,26 @@
-function wikidataQuery (query, options={}, callback) {
+function wikidataQuery (query, options = {}, callback) {
   if (typeof options === 'function') {
     callback = options
     options = {}
   }
 
-  str = wikidataCompile(query, options)
+  const str = wikidataCompile(query, options)
   wikidataRun(str, options, callback)
 }
 
-function wikidataCompile (query, options={}) {
-  let select = ['?item']
-  let where = []
-  let services = []
-  let group_by = ['?item']
+function wikidataCompile (query, options = {}) {
+  const select = ['?item']
+  const where = []
+  const services = []
+  const groupBy = ['?item']
 
   if (options.label) {
     select.push('?itemLabel')
-    group_by.push('?itemLabel')
+    groupBy.push('?itemLabel')
     services.push('SERVICE wikibase:label { bd:serviceParam wikibase:language "de,en". }')
   }
 
-  for (let property in query) {
+  for (const property in query) {
     let str = '?item wdt:' + property + ' '
 
     if (typeof query[property] === 'object') {
@@ -30,11 +30,11 @@ function wikidataCompile (query, options={}) {
           break
         case 'string':
         default:
-          str += '"' + query[property].value.replace(/"/g, "\\\"") + '"'
+          str += '"' + query[property].value.replace(/"/g, '\\"') + '"'
           break
       }
     } else {
-      str += '"' + query[property].replace(/"/g, "\\\"") + '"'
+      str += '"' + query[property].replace(/"/g, '\\"') + '"'
     }
 
     where.push(str + '.')
@@ -42,11 +42,11 @@ function wikidataCompile (query, options={}) {
 
   if (options.properties) {
     options.properties.forEach(property => {
-      //select.push('?' + property)
+      // select.push('?' + property)
       select.push('(GROUP_CONCAT(DATATYPE(?O' + property + '); SEPARATOR="|") AS ?T' + property + ')')
       select.push('(GROUP_CONCAT(?O' + property + '; SEPARATOR="|") AS ?' + property + ')')
       where.push('OPTIONAL{?item wdt:' + property + ' ?O' + property + ' .}')
-      //group_by.push('?O' + property)
+      // groupBy.push('?O' + property)
     })
   }
 
@@ -54,7 +54,7 @@ function wikidataCompile (query, options={}) {
     options.articles.forEach(article => {
       let url
 
-      let m = article.match(/^([a-z]+)wiki$/)
+      const m = article.match(/^([a-z]+)wiki$/)
       if (article === 'commons') {
         url = 'https://commons.wikimedia.org/'
       } else if (m) {
@@ -63,18 +63,18 @@ function wikidataCompile (query, options={}) {
 
       where.push('OPTIONAL {?' + article + ' schema:about ?item. ?' + article + ' schema:isPartOf <' + url + '>.}')
       select.push('?' + article)
-      group_by.push('?' + article)
+      groupBy.push('?' + article)
     })
   }
 
-  const str = 'SELECT ' + select.join(' ') + ' WHERE {' + where.join(' ') + services.join(' ') + '}' + (group_by.length ? ' GROUP BY ' + group_by.join(' ') : '')
+  const str = 'SELECT ' + select.join(' ') + ' WHERE {' + where.join(' ') + services.join(' ') + '}' + (groupBy.length ? ' GROUP BY ' + groupBy.join(' ') : '')
 
-  //console.log(str)
+  // console.log(str)
 
   return str
 }
 
-function wikidataRun(str, options, callback) {
+function wikidataRun (str, options, callback) {
   global.fetch('https://query.wikidata.org/sparql?query=' + encodeURIComponent(str),
     {
       headers: {
@@ -89,10 +89,10 @@ function wikidataRun(str, options, callback) {
     .then(result => {
       const data = {}
 
-      //console.log(JSON.stringify(result, null, '  '))
+      // console.log(JSON.stringify(result, null, '  '))
       result.results.bindings.forEach(item => {
         const id = item.item.value.match(/(Q[0-9]+)$/)[1]
-        let _item = {}
+        const _item = {}
 
         if (options.label) {
           _item.label = item.itemLabel.value
@@ -130,7 +130,6 @@ function wikidataRun(str, options, callback) {
       callback(null, data)
     })
 }
-
 
 module.exports = {
   query: wikidataQuery,
