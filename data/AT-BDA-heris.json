@@ -16,8 +16,6 @@
         "renderedTableClass": "Denkmalliste-Tabelle",
         "renderedIdField": "heris-id",
         "renderedWikidataField": "wikidata",
-        "rawIdField": null,
-        "rawWikidataField": "WD-Item",
         "renderedFields": {
             "object-id": {
                 "column": 2,

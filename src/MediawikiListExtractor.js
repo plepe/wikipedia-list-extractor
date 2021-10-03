@@ -114,7 +114,7 @@ class MediawikiListExtractor {
   getItemIdsFromField (items, callback) {
     const result = {}
 
-    items.forEach(item => result[item[this.param.rawIdField]] = item)
+    items.forEach(item => result[item[this.param.templateIdField]] = item)
 
     callback(null, result)
   }
@@ -136,7 +136,7 @@ class MediawikiListExtractor {
 
         const items = parseMediawikiTemplate(wikitext, this.param.template)
         let fun = 'getItemIdsFromField'
-        if (!this.param.rawIdField) {
+        if (!this.param.templateIdField) {
           fun = 'getItemIdsViaWikidata'
         }
 

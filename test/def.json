@@ -12,7 +12,6 @@
         "template": "Denkmalliste Österreich Tabellenzeile",
         "templateIdField": "ObjektID",
         "pageTitleMatch": "Liste der denkmalgeschützten Objekte in",
-        "rawIdField": "ObjektID",
         "renderedTableClass": "Denkmalliste-Tabelle",
         "renderedIdField": "object-id",
         "renderedFields": {
