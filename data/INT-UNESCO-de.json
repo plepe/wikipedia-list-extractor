@@ -11,9 +11,11 @@
         "source": "https://de.wikipedia.org",
         "template": "Tabellenzeile Welterbe",
         "templateIdField": "Ref",
+        "templateAnchorField": "Ref",
         "pageTitleMatch": "Welterbe (in|im|auf)",
         "renderedTableClass": "wikitable",
         "renderedIdField": "ref",
+        "renderedAnchorField": "ref",
         "renderedTableRowPrefix": "",
         "renderedFields": {
             "title": {

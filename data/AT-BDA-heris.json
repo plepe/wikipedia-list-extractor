@@ -13,9 +13,11 @@
         "wikidataListProperty": "P2817",
         "template": "Denkmalliste Österreich Tabellenzeile",
         "templateWikidataField": "WD-Item",
+        "templateAnchorField": "WD-Item",
         "renderedTableClass": "Denkmalliste-Tabelle",
         "renderedIdField": "heris-id",
         "renderedWikidataField": "wikidata",
+        "renderedAnchorField": "wikidata",
         "renderedFields": {
             "object-id": {
                 "column": 2,

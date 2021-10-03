@@ -11,19 +11,33 @@
         "source": "https://de.wikipedia.org",
         "template": "Denkmalliste Österreich Tabellenzeile",
         "templateIdField": "ObjektID",
+        "templateAnchorField": "WD-Item",
         "pageTitleMatch": "Liste der denkmalgeschützten Objekte in",
         "renderedTableClass": "Denkmalliste-Tabelle",
         "renderedIdField": "object-id",
+        "renderedAnchorField": "wikidata",
         "renderedFields": {
             "object-id": {
                 "column": 2,
                 "type": "html",
                 "regexp": "/Objekt-ID:<\\/span>&nbsp;([0-9]+)<\\/div>/"
             },
+            "heris-id": {
+                "column": 2,
+                "type": "html",
+                "regexp": "/BDA:<\\/span>&nbsp;([0-9]+)<br/"
+            },
             "title": {
                 "column": 2,
                 "type": "html",
                 "regexp": "/^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m"
+            },
+            "wikidata": {
+                "column": 2,
+                "type": "html",
+                "domQuery": "a[title=Wikidata]",
+                "domAttribute": "href",
+                "regexp": "/\/(Q\\d+)$/"
             },
             "commons-category": {
                 "column": 1,

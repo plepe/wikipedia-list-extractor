@@ -58,9 +58,8 @@ class MediawikiListExtractor {
       const id = renderedItemGetId(this.param, item, page, index)
 
       let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
-
-      if (id) {
-        url += '#' + id
+      if (this.param.renderedAnchorField) {
+        url += '#' + item[this.param.renderedAnchorField]
       }
 
       if (id) {
@@ -148,10 +147,16 @@ class MediawikiListExtractor {
           for (const id in items) {
             const raw = items[id]
 
+            let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
+            if (this.param.templateAnchorField) {
+              url += '#' + raw[this.param.templateAnchorField]
+            }
+
             if (id in this.cache) {
               this.cache[id].raw = raw
+              this.cache[id].url = url
             } else {
-              this.cache[id] = { id, page, raw }
+              this.cache[id] = { id, page, url, raw }
             }
 
             this.pageCache[page].raw.push(id)
