@@ -102,7 +102,7 @@ function wikidataRun(str, options, callback) {
           options.properties.forEach(property => {
             let type = ('T' + property) in item ? item['T' + property].value.split('|')[0] : null
 
-            if (item[property].value === '') {
+            if (!(property in item) || item[property].value === '') {
               return
             }
 

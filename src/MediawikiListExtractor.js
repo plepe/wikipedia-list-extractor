@@ -7,6 +7,7 @@ const async = {
 const parseRenderedPage = require('./parseRenderedPage')
 const renderedItemGetId = require('./renderedItemGetId')
 const findPagesForIds = require('./findPagesForIds')
+const findPagesForIdsWikidata = require('./findPagesForIdsWikidata')
 
 class MediawikiListExtractor {
   constructor (id, def, options = {}) {
@@ -206,11 +207,21 @@ class MediawikiListExtractor {
       return callback(null, result)
     }
 
-    findPagesForIds (this.param, ids, this.options, (err, pages) => {
+    let fun = findPagesForIds
+    if (this.param.wikidataIdProperty) {
+      fun = findPagesForIdsWikidata
+    }
+
+    fun (this.param, ids, this.options, (err, pages, mapping) => {
       if (err) { return callback(err) }
 
       if (!pages.length) {
         return callback(null, result)
+      }
+
+      if (!mapping) {
+        mapping = {}
+        ids.forEach(id => mapping[id] = id)
       }
 
       async.eachSeries(pages, (page, done) => {
@@ -222,8 +233,10 @@ class MediawikiListExtractor {
           if (err) { return callback(err) }
 
           ids = ids.filter(id => {
-            if (id in this.cache) {
-              result.push(this.cache[id])
+            let mappedId = mapping[id]
+
+            if (mappedId in this.cache) {
+              result.push(this.cache[mappedId])
               return false
             } else {
               return true
