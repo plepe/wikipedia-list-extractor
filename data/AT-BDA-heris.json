@@ -1,0 +1,62 @@
+{
+    "openstreetmap-tag": null,
+    "title": {
+        "de": "Denkmalgeschützte Objekte in Österreich (heris)"
+    },
+    "organisation": {
+        "de": "Bundesdenkmalamt Österreich"
+    },
+    "param": {
+        "language": "de",
+        "source": "https://de.wikipedia.org",
+        "wikidataIdProperty": "P9154",
+        "wikidataListProperty": "P2817",
+        "template": "Denkmalliste Österreich Tabellenzeile",
+        "templateWikidataField": "WD-Item",
+        "renderedTableClass": "Denkmalliste-Tabelle",
+        "renderedIdField": "heris-id",
+        "renderedWikidataField": "wikidata",
+        "rawIdField": null,
+        "rawWikidataField": "WD-Item",
+        "renderedFields": {
+            "object-id": {
+                "column": 2,
+                "type": "html",
+                "regexp": "/Objekt-ID:<\\/span>&nbsp;([0-9]+)<\\/div>/"
+            },
+            "heris-id": {
+                "column": 2,
+                "type": "html",
+                "regexp": "/BDA:<\\/span>&nbsp;([0-9]+)<br/"
+            },
+            "title": {
+                "column": 2,
+                "type": "html",
+                "regexp": "/^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m"
+            },
+            "wikidata": {
+                "column": 2,
+                "type": "html",
+                "domQuery": "a[title=Wikidata]",
+                "domAttribute": "href",
+                "regexp": "/\/(Q\\d+)$/"
+            },
+            "commons-category": {
+                "column": 1,
+                "type": "html",
+                "domQuery": "a",
+                "domAttribute": "href",
+                "1replaceOld": "/<a href=\"https:\/\/commons.wikimedia.org\/wiki/Category:([^\"]*)\".*/m",
+                "replaceNew": "$1"
+            },
+            "image": {
+                "column": 0,
+                "type": "image"
+            },
+            "description": {
+                "column": 4,
+                "type": "html"
+            }
+        }
+    }
+}

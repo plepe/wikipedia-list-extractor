@@ -7,6 +7,8 @@ const async = {
 const parseRenderedPage = require('./parseRenderedPage')
 const renderedItemGetId = require('./renderedItemGetId')
 const findPagesForIds = require('./findPagesForIds')
+const findPagesForIdsWikidata = require('./findPagesForIdsWikidata')
+const wikidata = require('./wikidata')
 
 class MediawikiListExtractor {
   constructor (id, def, options = {}) {
@@ -88,6 +90,35 @@ class MediawikiListExtractor {
     )
   }
 
+  getItemIdsViaWikidata (items, callback) {
+    const result = {}
+    const wdMapping = {}
+
+    items.forEach(item => wdMapping[item[this.param.rawWikidataField]] = item)
+
+    let query = 'SELECT ?item ?idProp WHERE { ?item wdt:' + this.param.wikidataIdProperty + ' ?idProp. FILTER (?item in (' + items.map(item => 'wd:' + item[this.param.rawWikidataField]).join(', ') + '))}'
+
+    wikidata.run(query, {properties:['idProp']}, (err, r) => {
+      if (err) { return callback(err) }
+
+      for (let wdId in r) {
+        const id = r[wdId].idProp.values[0]
+
+        result[id] = wdMapping[wdId]
+      }
+
+      callback(null, result)
+    })
+  }
+
+  getItemIdsFromField (items, callback) {
+    const result = {}
+
+    items.forEach(item => result[item[this.param.rawIdField]] = item)
+
+    callback(null, result)
+  }
+
   loadRaw (page, callback) {
     let result = []
 
@@ -104,10 +135,15 @@ class MediawikiListExtractor {
         this.pageCache[page].wikitext = wikitext
 
         const items = parseMediawikiTemplate(wikitext, this.param.template)
-        items.forEach(raw => {
-          const id = raw[this.param.rawIdField]
+        let fun = 'getItemIdsFromField'
+        if (!this.param.rawIdField) {
+          fun = 'getItemIdsViaWikidata'
+        }
 
-          if (id) {
+        this[fun](items, (err, items) => {
+          for (let id in items) {
+            const raw = items[id]
+
             if (id in this.cache) {
               this.cache[id].raw = raw
             } else {
@@ -116,9 +152,9 @@ class MediawikiListExtractor {
 
             this.pageCache[page].raw.push(id)
           }
-        })
 
-        callback(null, this.pageCache[page].raw)
+          callback(null, this.pageCache[page].raw)
+        })
       }
     )
   }
@@ -206,7 +242,12 @@ class MediawikiListExtractor {
       return callback(null, result)
     }
 
-    findPagesForIds (this.param, ids, this.options, (err, pages) => {
+    let fun = findPagesForIds
+    if (this.param.wikidataIdProperty) {
+      fun = findPagesForIdsWikidata
+    }
+
+    fun (this.param, ids, this.options, (err, pages, mapping) => {
       if (err) { return callback(err) }
 
       if (!pages.length) {
@@ -220,6 +261,8 @@ class MediawikiListExtractor {
 
         this.getPageItems(page, options, (err, items) => {
           if (err) { return callback(err) }
+
+          console.log(items)
 
           ids = ids.filter(id => {
             if (id in this.cache) {
