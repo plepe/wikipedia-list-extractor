@@ -1,4 +1,30 @@
-module.exports = function findPageForIds (source, ids, options, callback) {
+const async = {
+  map: require('async/map')
+}
+
+module.exports = function (source, ids, options, callback) {
+  // if 'template' is an array, query all templates and merge results together
+  if (source.template && source.template.length) {
+    return async.map(
+      source.template,
+      (template, done) => {
+        const s = JSON.parse(JSON.stringify(source))
+        s.template = template
+
+        findPageForIds(s, ids, options, done)
+      },
+      (err, list) => {
+        if (err) { return callback(err) }
+
+        callback(err, list.flat())
+      }
+    )
+  }
+
+  findPageForIds(source, ids, options, callback)
+}
+
+function findPageForIds (source, ids, options, callback) {
   let search = ''
   if (source.template) {
     search += 'hastemplate:"' + source.template + '" '

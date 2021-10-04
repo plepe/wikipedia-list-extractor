@@ -135,7 +135,15 @@ class MediawikiListExtractor {
 
         this.pageCache[page].wikitext = wikitext
 
-        const items = parseMediawikiTemplate(wikitext, this.param.template)
+        let items
+        if (this.param.template.length) {
+          items = this.param.template
+            .map(template => parseMediawikiTemplate(wikitext, template))
+            .flat()
+        } else {
+          items = parseMediawikiTemplate(wikitext, this.param.template)
+        }
+
         let fun = 'getItemIdsFromField'
         if (!this.param.templateIdField) {
           fun = 'getItemIdsViaWikidata'
