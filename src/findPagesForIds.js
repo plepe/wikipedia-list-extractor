@@ -4,7 +4,7 @@ const async = {
 
 module.exports = function (source, ids, options, callback) {
   // if 'template' is an array, query all templates and merge results together
-  if (source.template && source.template.length) {
+  if (source.template && Array.isArray(source.template)) {
     return async.map(
       source.template,
       (template, done) => {

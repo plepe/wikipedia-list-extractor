@@ -136,7 +136,7 @@ class MediawikiListExtractor {
         this.pageCache[page].wikitext = wikitext
 
         let items
-        if (this.param.template.length) {
+        if (Array.isArray(this.param.template)) {
           items = this.param.template
             .map(template => parseMediawikiTemplate(wikitext, template))
             .flat()
