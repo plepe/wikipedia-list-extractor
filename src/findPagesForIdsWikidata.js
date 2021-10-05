@@ -17,7 +17,6 @@ module.exports = function findPageForIdsWikidata (source, ids, options, callback
 
       for (const id in result) {
         const item = result[id]
-        console.log(item)
         if ('listUrl' in item && item.listUrl.values.length) {
           const m = item.listUrl.values[0].match(/\/wiki\/(.*)$/)
           if (m) {
