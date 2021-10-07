@@ -88,15 +88,16 @@ class MediawikiListExtractorSource {
     )
   }
 
-  getItemIdsViaWikidata (items, callback) {
+  getItemIdsViaWikidata (items, prefix, callback) {
     const result = {}
     const wdMapping = {}
+    const field = this.param[prefix + 'WikidataField']
 
     items.forEach(item => {
-      wdMapping[item[this.param.rawWikidataField]] = item
+      wdMapping[item[field]] = item
     })
 
-    const query = 'SELECT ?item ?idProp WHERE { ?item wdt:' + this.param.wikidataIdProperty + ' ?idProp. FILTER (?item in (' + items.map(item => 'wd:' + item[this.param.rawWikidataField]).join(', ') + '))}'
+    const query = 'SELECT ?item ?idProp WHERE { ?item wdt:' + this.param.wikidataIdProperty + ' ?idProp. FILTER (?item in (' + items.map(item => 'wd:' + item[field]).join(', ') + '))}'
 
     wikidata.run(query, { properties: ['idProp'] }, (err, r) => {
       if (err) { return callback(err) }
@@ -111,11 +112,12 @@ class MediawikiListExtractorSource {
     })
   }
 
-  getItemIdsFromField (items, callback) {
+  getItemIdsFromField (items, prefix, callback) {
     const result = {}
+    const field = this.param[prefix + 'IdField']
 
     items.forEach(item => {
-      result[item[this.param.templateIdField]] = item
+      result[item[field]] = item
     })
 
     callback(null, result)
@@ -148,7 +150,7 @@ class MediawikiListExtractorSource {
           fun = 'getItemIdsViaWikidata'
         }
 
-        this[fun](items, (err, items) => {
+        this[fun](items, 'template', (err, items) => {
           if (err) { return callback(err) }
 
           for (const id in items) {
