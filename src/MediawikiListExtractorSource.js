@@ -5,7 +5,6 @@ const async = {
 }
 
 const parseRenderedPage = require('./parseRenderedPage')
-const renderedItemGetId = require('./renderedItemGetId')
 const findPagesForIds = require('./findPagesForIds')
 const findPagesForIdsWikidata = require('./findPagesForIdsWikidata')
 const wikidata = require('./wikidata')
@@ -53,24 +52,28 @@ class MediawikiListExtractorSource {
 
     this.pageCache[page].rendered = []
 
-    items.forEach((item, index) => {
-      const id = renderedItemGetId(this.param, item, page, index)
+    this.getItemIdsFromField(items, 'rendered', (err, items) => {
+      if (err) { return callback(err) }
 
-      let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
-      if (this.param.renderedAnchorField) {
-        url += '#' + (this.param.anchorPrefix ? this.param.anchorPrefix : '') + item[this.param.renderedAnchorField] + (this.param.anchorSuffix ? this.param.anchorSuffix : '')
-      }
+      Object.keys(items).forEach((id, index) => {
+        const item = items[id]
 
-      if (id) {
-        if (id in this.cache) {
-          this.cache[id].url = url
-          this.cache[id].rendered = item
-        } else {
-          this.cache[id] = { id, page, url, rendered: item }
+        let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
+        if (this.param.renderedAnchorField) {
+          url += '#' + (this.param.anchorPrefix ? this.param.anchorPrefix : '') + item[this.param.renderedAnchorField] + (this.param.anchorSuffix ? this.param.anchorSuffix : '')
         }
-      }
 
-      this.pageCache[page].rendered.push(id)
+        if (id) {
+          if (id in this.cache) {
+            this.cache[id].url = url
+            this.cache[id].rendered = item
+          } else {
+            this.cache[id] = { id, page, url, rendered: item }
+          }
+        }
+
+        this.pageCache[page].rendered.push(id)
+      })
     })
 
     return this.pageCache[page].rendered
