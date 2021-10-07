@@ -58,7 +58,7 @@ class MediawikiListExtractorSource {
       fun = 'getItemIdsFromTemplate'
     }
 
-    this[fun](items, 'rendered', (err, items) => {
+    this[fun](items, 'rendered', (err, items, aliases) => {
       if (err) { return callback(err) }
 
       Object.keys(items).forEach((id, index) => {
@@ -75,6 +75,10 @@ class MediawikiListExtractorSource {
             this.cache[id].rendered = item
           } else {
             this.cache[id] = { id, page, url, rendered: item }
+          }
+
+          if (aliases) {
+            this.cache[id].aliases = aliases[id]
           }
         }
 
@@ -134,19 +138,27 @@ class MediawikiListExtractorSource {
 
   getItemIdsFromTemplate (items, prefix, callback) {
     const result = {}
+    const aliases = {}
     const template = Twig.twig({ data: this.param[prefix + 'IdTemplate'], async: false })
 
     items.forEach((item, index) => {
-      const id = template.render({item, index})
+      const ids = template
+        .render({item, index})
+        .split(/\n/g)
+        .filter(id => id !== '')
+      const id = ids.length ? ids[0] : null
 
-      if (id in result) {
+      if (id === null) {
+        console.error('Item #' + index + ', id is null', item)
+      } else if (id in result) {
         console.error('Item #' + index + ', duplicate ID "' + id + '"', item)
       } else {
         result[id] = item
+        aliases[id] = ids
       }
     })
 
-    callback(null, result)
+    callback(null, result, aliases)
   }
 
   loadRaw (page, callback) {
@@ -178,7 +190,7 @@ class MediawikiListExtractorSource {
           fun = 'getItemIdsViaWikidata'
         }
 
-        this[fun](items, 'template', (err, items) => {
+        this[fun](items, 'template', (err, items, aliases) => {
           if (err) { return callback(err) }
 
           for (const id in items) {
@@ -194,6 +206,10 @@ class MediawikiListExtractorSource {
               this.cache[id].url = url
             } else {
               this.cache[id] = { id, page, url, raw }
+            }
+
+            if (aliases) {
+              this.cache[id].aliases = aliases[id]
             }
 
             this.pageCache[page].raw.push(id)
