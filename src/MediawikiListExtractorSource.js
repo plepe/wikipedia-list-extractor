@@ -80,7 +80,9 @@ class MediawikiListExtractorSource {
 
           if (aliases) {
             this.cache[id].aliases = aliases[id]
-            aliases[id].forEach(alias => this.aliases[alias] = id)
+            aliases[id].forEach(alias => {
+              this.aliases[alias] = id
+            })
           }
         }
 
@@ -143,7 +145,7 @@ class MediawikiListExtractorSource {
 
     items.forEach((item, index) => {
       const ids = template
-        .render({item, index})
+        .render({ item, index })
         .split(/\n/g)
         .filter(id => id !== '')
       const id = ids.length ? ids[0] : null
@@ -210,7 +212,9 @@ class MediawikiListExtractorSource {
 
             if (aliases) {
               this.cache[id].aliases = aliases[id]
-              aliases[id].forEach(alias => this.aliases[alias] = id)
+              aliases[id].forEach(alias => {
+                this.aliases[alias] = id
+              })
             }
 
             this.pageCache[page].raw.push(id)

@@ -7,12 +7,12 @@ const async = {
 const regexpEscape = require('./regexpEscape')
 
 module.exports = function (source, ids, options, callback) {
-  let idFields = {'': ids}
+  let idFields = { '': ids }
   if (source.idToQuery) {
     const template = Twig.twig({ data: source.idToQuery, async: false })
     idFields = {}
     ids.forEach(id => {
-      const fieldId = template.render({id}).split(/\|/)
+      const fieldId = template.render({ id }).split(/\|/)
       if (fieldId[0] in idFields) {
         idFields[fieldId[0]].push(fieldId[1])
       } else {
