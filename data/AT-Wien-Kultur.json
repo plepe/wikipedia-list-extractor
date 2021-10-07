@@ -27,7 +27,7 @@
             },
             "id": {
                "column" : 2,
-               "domQuery": "a",
+               "regexp": "/ID:<\\/abbr>\\s*<a[^>]*>([0-9]+)</",
                "type": "html"
             },
             "image": {
@@ -76,8 +76,8 @@
             },
             "id": {
                "column" : 3,
-               "domQuery": "a.external",
-               "type": "html"
+               "type": "html",
+               "regexp": "/ID:<\\/abbr>\\s*<a[^>]*>([0-9]+)</"
             },
             "image": {
                "column" : 0,
