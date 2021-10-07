@@ -47,13 +47,13 @@
                "type": "html"
             }
          },
-         "renderedIdField": "id",
+         "renderedIdTemplate": "{% if item.id %}{{ item.id }}{% else %}index-{{ index }}{% endif %}",
          "renderedTableClass": "wikitable",
          "renderedWikidataField": "wikidata",
          "source": "https://de.wikipedia.org",
          "template": "WLPA-AT-Zeile",
          "templateAnchorField": "ID",
-         "templateIdField": "ID",
+         "templateIdTemplate": "{% if item.ID %}{{ item.ID }}{% else %}index-{{ index }}{% endif %}",
          "templateWikidataField": "WD-Item"
       },
       {
@@ -96,13 +96,14 @@
                "type": "html"
             }
          },
-         "renderedIdField": "id",
+         "renderedIdTemplate": "{% if item.id %}{{ item.id }}{% else %}index-{{ index }}{% endif %}",
          "renderedTableClass": "wikitable",
          "renderedWikidataField": "wikidata",
          "source": "https://de.wikipedia.org",
          "template": "Gedenktafel Österreich Tabellenzeile",
          "anchorPrefix": "id-",
          "templateIdField": "ID",
+         "templateIdTemplate": "{% if item.ID %}{{ item.ID }}{% else %}index-{{ index }}{% endif %}",
          "templateAnchorField": "ID",
          "templateWikidataField": "WD-Item"
       }

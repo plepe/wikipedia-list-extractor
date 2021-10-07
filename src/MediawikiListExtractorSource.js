@@ -1,3 +1,4 @@
+const Twig = require('twig')
 const parseMediawikiTemplate = require('parse-mediawiki-template')
 const async = {
   eachSeries: require('async/eachSeries'),
@@ -52,7 +53,12 @@ class MediawikiListExtractorSource {
 
     this.pageCache[page].rendered = []
 
-    this.getItemIdsFromField(items, 'rendered', (err, items) => {
+    let fun = 'getItemIdsFromField'
+    if (this.param.renderedIdTemplate) {
+      fun = 'getItemIdsFromTemplate'
+    }
+
+    this[fun](items, 'rendered', (err, items) => {
       if (err) { return callback(err) }
 
       Object.keys(items).forEach((id, index) => {
@@ -126,6 +132,23 @@ class MediawikiListExtractorSource {
     callback(null, result)
   }
 
+  getItemIdsFromTemplate (items, prefix, callback) {
+    const result = {}
+    const template = Twig.twig({ data: this.param[prefix + 'IdTemplate'], async: false })
+
+    items.forEach((item, index) => {
+      const id = template.render({item, index})
+
+      if (id in result) {
+        console.error('Item #' + index + ', duplicate ID "' + id + '"', item)
+      } else {
+        result[id] = item
+      }
+    })
+
+    callback(null, result)
+  }
+
   loadRaw (page, callback) {
     if (!(page in this.pageCache)) {
       this.pageCache[page] = {}
@@ -149,7 +172,9 @@ class MediawikiListExtractorSource {
         }
 
         let fun = 'getItemIdsFromField'
-        if (!this.param.templateIdField) {
+        if (this.param.templateIdTemplate) {
+          fun = 'getItemIdsFromTemplate'
+        } else if (this.param.templateWikidataField) {
           fun = 'getItemIdsViaWikidata'
         }
 
