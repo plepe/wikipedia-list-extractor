@@ -37,9 +37,10 @@ describe('MediawikiListExtractor', function () {
 
   it('search all elements of a page', function (done) {
     wikipediaList.getPageItems('Liste der denkmalgeschützten Objekte in Achau', {},
-      (err, result) => {
+      function (err, result) {
         assert.equal(result.length, 9, 'should return 9 results')
-        assert.equal(result[0].id, '126450')
+        const itemIds = result.map(item => item.id).sort()
+        assert.deepEqual(itemIds, ['10014', '111392', '126450', '1439', '1853', '20055', '53070', '77816', '77820'])
 
         done()
       }
