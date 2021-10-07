@@ -32,6 +32,7 @@ class MediawikiListExtractorSource {
         const wikitext = result.parse.wikitext['*']
         callback(null, wikitext)
       })
+      .catch(error => callback(error))
   }
 
   loadPage (param, callback) {
@@ -43,6 +44,7 @@ class MediawikiListExtractorSource {
     global.fetch(url)
       .then(res => res.text())
       .then(body => callback(null, body))
+      .catch(error => callback(error))
   }
 
   parsePage (page, body, callback) {
