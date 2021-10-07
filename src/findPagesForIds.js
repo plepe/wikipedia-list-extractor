@@ -13,7 +13,10 @@ module.exports = function (source, ids, options, callback) {
     idFields = {}
     ids.forEach(id => {
       const fieldId = template.render({ id }).split(/\|/)
-      if (fieldId[0] in idFields) {
+      if (fieldId.length === 1) {
+        console.error('Can\'t parse id', id)
+      }
+      else if (fieldId[0] in idFields) {
         idFields[fieldId[0]].push(fieldId[1])
       } else {
         idFields[fieldId[0]] = [fieldId[1]]
@@ -22,6 +25,10 @@ module.exports = function (source, ids, options, callback) {
   } else if (source.templateIdField) {
     idFields = {}
     idFields[source.templateIdField] = ids
+  }
+
+  if (Object.keys(idFields).length === 0) {
+    return callback(new Error('no valid ids found'))
   }
 
   // if 'template' is an array, query all templates and merge results together
