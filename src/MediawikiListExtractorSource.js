@@ -15,6 +15,7 @@ class MediawikiListExtractorSource {
     this.id = id
     this.param = param
     this.cache = {}
+    this.aliases = {}
     this.pageCache = {}
     this.options = options
   }
@@ -79,6 +80,7 @@ class MediawikiListExtractorSource {
 
           if (aliases) {
             this.cache[id].aliases = aliases[id]
+            aliases[id].forEach(alias => this.aliases[alias] = id)
           }
         }
 
@@ -210,6 +212,7 @@ class MediawikiListExtractorSource {
 
             if (aliases) {
               this.cache[id].aliases = aliases[id]
+              aliases[id].forEach(alias => this.aliases[alias] = id)
             }
 
             this.pageCache[page].raw.push(id)
@@ -291,6 +294,9 @@ class MediawikiListExtractorSource {
       if (id in this.cache) {
         result.push(this.cache[id])
         return false
+      } else if (id in this.aliases) {
+        result.push(this.cache[this.aliases[id]])
+        return false
       } else {
         return true
       }
@@ -327,6 +333,9 @@ class MediawikiListExtractorSource {
           ids = ids.filter(id => {
             if (id in this.cache) {
               result.push(this.cache[id])
+              return false
+            } else if (id in this.aliases) {
+              result.push(this.cache[this.aliases[id]])
               return false
             } else {
               return true
