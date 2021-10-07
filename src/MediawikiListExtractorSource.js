@@ -45,7 +45,7 @@ class MediawikiListExtractorSource {
       .then(body => callback(null, body))
   }
 
-  parsePage (page, body) {
+  parsePage (page, body, callback) {
     if (!(page in this.pageCache)) {
       this.pageCache[page] = {}
     }
@@ -88,7 +88,7 @@ class MediawikiListExtractorSource {
       })
     })
 
-    return this.pageCache[page].rendered
+    callback(null, this.pageCache[page].rendered)
   }
 
   loadRendered (page, callback) {
@@ -96,9 +96,7 @@ class MediawikiListExtractorSource {
       (err, body) => {
         if (err) { return callback(err) }
 
-        const result = this.parsePage(page, body)
-
-        callback(null, result)
+        this.parsePage(page, body, callback)
       }
     )
   }
