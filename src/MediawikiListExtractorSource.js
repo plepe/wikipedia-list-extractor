@@ -58,7 +58,7 @@ class MediawikiListExtractorSource {
 
       let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
       if (this.param.renderedAnchorField) {
-        url += '#' + item[this.param.renderedAnchorField]
+        url += '#' + (this.param.anchorPrefix ? this.param.anchorPrefix : '') + item[this.param.renderedAnchorField] + (this.param.anchorSuffix ? this.param.anchorSuffix : '')
       }
 
       if (id) {
@@ -156,7 +156,7 @@ class MediawikiListExtractorSource {
 
             let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
             if (this.param.templateAnchorField) {
-              url += '#' + raw[this.param.templateAnchorField]
+              url += '#' + (this.param.anchorPrefix ? this.param.anchorPrefix : '') + raw[this.param.templateAnchorField] + (this.param.anchorSuffix ? this.param.anchorSuffix : '')
             }
 
             if (id in this.cache) {
