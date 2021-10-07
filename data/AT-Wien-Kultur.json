@@ -10,6 +10,7 @@
       {
          "language": "de",
          "pageTitleMatch": "Liste der Kunstwerke im öffentlichen Raum in Wien",
+         "idToQuery": "{% if id starts with 'id-' %}ID|{{ id|slice(3) }}{% elseif id starts with 'Q' %}WD-Item|{{ id }}{% endif %}",
          "renderedAnchorField": "id",
          "anchorPrefix": "id-",
          "renderedFields": {
@@ -47,18 +48,19 @@
                "type": "html"
             }
          },
-         "renderedIdTemplate": "{% if item.id %}{{ item.id }}{% else %}index-{{ index }}{% endif %}",
+         "renderedIdTemplate": "{% if item.id %}{{ item.id }}{% endif %}\n\n{{ item.wikidata }}\n\nindex-{{ index }}",
          "renderedTableClass": "wikitable",
          "renderedWikidataField": "wikidata",
          "source": "https://de.wikipedia.org",
          "template": "WLPA-AT-Zeile",
          "templateAnchorField": "ID",
-         "templateIdTemplate": "{% if item.ID %}{{ item.ID }}{% else %}index-{{ index }}{% endif %}",
+         "templateIdTemplate": "{% if item.ID %}{{ item.ID }}{% endif %}\n\n{{ attribute(item, 'WD-Item') }}\n\nindex-{{ index }}",
          "templateWikidataField": "WD-Item"
       },
       {
          "language": "de",
          "pageTitleMatch": "Liste der Gedenktafeln und Gedenksteine in Wien",
+         "idToQuery": "{% if id starts with 'id-' %}ID|{{ id|slice(3) }}{% elseif id starts with 'vtg-' %}VTG|{{ id|slice(4) }}{% elseif id starts with 'Q' %}WD-Item|{{ id }}{% endif %}",
          "renderedAnchorField": "id",
          "renderedAnchorPrefix": "id-",
          "renderedFields": {
@@ -79,6 +81,11 @@
                "type": "html",
                "regexp": "/ID:<\\/abbr>\\s*<a[^>]*>([0-9]+)</"
             },
+            "vtg": {
+               "column" : 3,
+               "regexp": "/www.viennatouristguide.at/Gedenktafeln/([^\"]*)\"/",
+               "type": "html"
+            },
             "image": {
                "column" : 0,
                "type": "image"
@@ -96,14 +103,14 @@
                "type": "html"
             }
          },
-         "renderedIdTemplate": "{% if item.id %}{{ item.id }}{% else %}index-{{ index }}{% endif %}",
+         "renderedIdTemplate": "{% if item.id %}id-{{ item.id }}{% endif %}\n\n{{ item.wikidata }}\n\n{% if item.vtg %}vtg-{{ item.vtg }}{% endif %}\n\nindex-{{ index }}",
          "renderedTableClass": "wikitable",
          "renderedWikidataField": "wikidata",
          "source": "https://de.wikipedia.org",
          "template": "Gedenktafel Österreich Tabellenzeile",
          "anchorPrefix": "id-",
          "templateIdField": "ID",
-         "templateIdTemplate": "{% if item.ID %}{{ item.ID }}{% else %}index-{{ index }}{% endif %}",
+         "templateIdTemplate": "{% if item.ID %}id-{{ item.ID }}{% endif %}\n\n{{ attribute(item, 'WD-Item') }}\n\n{% if item.VTG %}vtg-{{ item.VTG }}{% endif %}\n\nindex-{{ index }}",
          "templateAnchorField": "ID",
          "templateWikidataField": "WD-Item"
       }

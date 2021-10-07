@@ -1,8 +1,29 @@
+const Twig = require('twig')
 const async = {
-  map: require('async/map')
+  map: require('async/map'),
+  mapValues: require('async/mapValues')
 }
 
+const regexpEscape = require('./regexpEscape')
+
 module.exports = function (source, ids, options, callback) {
+  let idFields = {'': ids}
+  if (source.idToQuery) {
+    const template = Twig.twig({ data: source.idToQuery, async: false })
+    idFields = {}
+    ids.forEach(id => {
+      const fieldId = template.render({id}).split(/\|/)
+      if (fieldId[0] in idFields) {
+        idFields[fieldId[0]].push(fieldId[1])
+      } else {
+        idFields[fieldId[0]] = [fieldId[1]]
+      }
+    })
+  } else if (source.templateIdField) {
+    idFields = {}
+    idFields[source.templateIdField] = ids
+  }
+
   // if 'template' is an array, query all templates and merge results together
   if (source.template && Array.isArray(source.template)) {
     return async.map(
@@ -11,7 +32,14 @@ module.exports = function (source, ids, options, callback) {
         const s = JSON.parse(JSON.stringify(source))
         s.template = template
 
-        findPageForIds(s, ids, options, done)
+        async.mapValues(
+          idFields,
+          (ids, idField, done) => findPageForIds(s, idField, ids, options, done),
+          (err, list) => {
+            if (err) { return callback(err) }
+            done(err, Object.values(list).flat())
+          }
+        )
       },
       (err, list) => {
         if (err) { return callback(err) }
@@ -21,19 +49,26 @@ module.exports = function (source, ids, options, callback) {
     )
   }
 
-  findPageForIds(source, ids, options, callback)
+  async.mapValues(
+    idFields,
+    (ids, idField, done) => findPageForIds(source, idField, ids, options, done),
+    (err, list) => {
+      if (err) { return callback(err) }
+      callback(err, Object.values(list).flat())
+    }
+  )
 }
 
-function findPageForIds (source, ids, options, callback) {
+function findPageForIds (source, idField, ids, options, callback) {
   let search = ''
   if (source.template) {
     search += 'hastemplate:"' + source.template + '" '
   }
 
-  if (source.templateIdField) {
-    search += 'insource:/' + source.template + '.*' + source.templateIdField + ' *= *(' + ids.join('|') + ')[^0-9]/ '
+  if (idField) {
+    search += 'insource:/' + source.template + '.*' + idField + ' *= *(' + ids.map(id => regexpEscape(id)).join('|') + ')[^0-9]/ '
   } else if (source.searchIdPrefix || source.searchIdSuffix) {
-    search += 'insource:/' + (source.searchIdPrefix || '') + '(' + ids.join('|') + ')' + (source.searchIdSuffix || ' *\\|') + '/ '
+    search += 'insource:/' + (source.searchIdPrefix || '') + '(' + ids.map(id => regexpEscape(id)).join('|') + ')' + (source.searchIdSuffix || ' *\\|') + '/ '
   }
 
   if (source.pageTitleMatch) {
