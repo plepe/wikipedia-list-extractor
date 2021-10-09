@@ -72,8 +72,8 @@ function findPageForIds (source, idField, ids, options, callback) {
     search += 'hastemplate:"' + source.template + '" '
   }
 
-  if (idField) {
-    search += 'insource:/' + source.template + '.*' + idField + ' *= *(' + ids.map(id => regexpEscape(id)).join('|') + ')[^0-9]/ '
+  if (idField && source.template) {
+    search += 'insource:/\| *' + idField + ' *= *(' + ids.map(id => regexpEscape(id)).join('|') + ')[^0-9]/ '
   } else if (source.searchIdPrefix || source.searchIdSuffix) {
     search += 'insource:/' + (source.searchIdPrefix || '') + '(' + ids.map(id => regexpEscape(id)).join('|') + ')' + (source.searchIdSuffix || ' *\\|') + '/ '
   }
