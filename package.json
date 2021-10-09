@@ -20,7 +20,8 @@
     "jsdom": "^16.4.0",
     "node-fetch": "^2.6.0",
     "parse-mediawiki-template": "^0.1.0",
-    "twig": "^1.15.4"
+    "twig": "^1.15.4",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "browserify": "^16.5.2",

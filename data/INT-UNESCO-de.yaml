@@ -1,0 +1,35 @@
+openstreetmap-tag: ref:whc
+title:
+  de: UNESCO Welterbe
+organisation:
+  de: UNESCO
+param:
+  language: de
+  source: https://de.wikipedia.org
+  template: Tabellenzeile Welterbe
+  templateIdField: Ref
+  templateAnchorField: Ref
+  pageTitleMatch: Welterbe (in|im|auf)
+  renderedTableClass: wikitable
+  renderedIdField: ref
+  renderedAnchorField: ref
+  renderedTableRowPrefix: ""
+  renderedFields:
+    title:
+      column: 1
+      type: html
+      domQuery: a
+    image:
+      column: "0"
+      type: image
+    description:
+      column: "5"
+      type: html
+    ref:
+      column: "4"
+      type: html
+      domQuery: a
+    start_date:
+      column: "2"
+      type: html
+      regexp: /(\d+)/

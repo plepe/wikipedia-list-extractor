@@ -1,0 +1,121 @@
+title:
+  de: DenkmalgeschÃ¼tzte Objekte in Österreich
+organisation:
+  de: Bundesdenkmalamt Österreich
+openstreetmap-tag: ref:wien:kultur
+param:
+  - language: de
+    pageTitleMatch: Liste der Kunstwerke im öffentlichen Raum in Wien
+    idToQuery: "{% if id starts with 'id-' %}ID|{{ id|slice(3) }}{% elseif id starts
+      with 'Q' %}WD-Item|{{ id }}{% endif %}"
+    renderedAnchorField: id
+    anchorPrefix: id-
+    renderedFields:
+      commons-category:
+        1replaceOld: /<a href="https://commons.wikimedia.org/wiki/Category:([^"]*)".*/m
+        column: 1
+        domAttribute: href
+        domQuery: a
+        replaceNew: $1
+        type: html
+      description:
+        column: 4
+        type: html
+      id:
+        column: 2
+        regexp: /ID:<\/abbr>\s*<a[^>]*>([0-9]+)</
+        type: html
+      image:
+        column: 0
+        type: image
+      title:
+        column: 2
+        regexp: /^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m
+        type: html
+      wikidata:
+        column: 2
+        domAttribute: href
+        domQuery: a[title=Wikidata]
+        regexp: //(Q\d+)$/
+        type: html
+    renderedIdTemplate: |-
+      {% if item.id %}{{ item.id }}{% endif %}
+
+      {{ item.wikidata }}
+
+      index-{{ index }}
+    renderedTableClass: wikitable
+    renderedWikidataField: wikidata
+    source: https://de.wikipedia.org
+    template: WLPA-AT-Zeile
+    templateAnchorField: ID
+    templateIdTemplate: |-
+      {% if item.ID %}{{ item.ID }}{% endif %}
+
+      {{ attribute(item, 'WD-Item') }}
+
+      index-{{ index }}
+    templateWikidataField: WD-Item
+  - language: de
+    pageTitleMatch: Liste der Gedenktafeln und Gedenksteine in Wien
+    idToQuery: "{% if id starts with 'id-' %}ID|{{ id|slice(3) }}{% elseif id starts
+      with 'vtg-' %}VTG|{{ id|slice(4) }}{% elseif id starts with 'Q'
+      %}WD-Item|{{ id }}{% endif %}"
+    renderedAnchorField: id
+    renderedAnchorPrefix: id-
+    renderedFields:
+      commons-category:
+        1replaceOld: /<a href="https://commons.wikimedia.org/wiki/Category:([^"]*)".*/m
+        column: 1
+        domAttribute: href
+        domQuery: a
+        replaceNew: $1
+        type: html
+      description:
+        column: 6
+        type: html
+      id:
+        column: 3
+        type: html
+        regexp: /ID:<\/abbr>\s*<a[^>]*>([0-9]+)</
+      vtg:
+        column: 3
+        regexp: /www.viennatouristguide.at/Gedenktafeln/([^"]*)"/
+        type: html
+      image:
+        column: 0
+        type: image
+      title:
+        column: 3
+        regexp: /^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m
+        type: html
+      wikidata:
+        column: 3
+        domAttribute: href
+        domQuery: a[title=Wikidata]
+        regexp: //(Q\d+)$/
+        type: html
+    renderedIdTemplate: |-
+      {% if item.id %}id-{{ item.id }}{% endif %}
+
+      {{ item.wikidata }}
+
+      {% if item.vtg %}vtg-{{ item.vtg }}{% endif %}
+
+      index-{{ index }}
+    renderedTableClass: wikitable
+    renderedWikidataField: wikidata
+    source: https://de.wikipedia.org
+    template: Gedenktafel Österreich Tabellenzeile
+    anchorPrefix: id-
+    templateIdField: ID
+    templateIdTemplate: |-
+      {% if item.ID %}id-{{ item.ID }}{% endif %}
+
+      {{ attribute(item, 'WD-Item') }}
+
+      {% if item.VTG %}vtg-{{ item.VTG }}{% endif %}
+
+      index-{{ index }}
+    templateAnchorField: ID
+    templateWikidataField: WD-Item

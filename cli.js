@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs')
+const yaml = require('yaml')
 
 require('./node')
 
@@ -29,8 +30,8 @@ parser.addArgument('id', {
 const args = parser.parseArgs()
 
 const listId = (args.list || 'AT-BDA')
-let def = fs.readFileSync('data/' + listId + '.json')
-def = JSON.parse(def)
+let def = fs.readFileSync('data/' + listId + '.yaml')
+def = yaml.parse(def.toString())
 
 const list = new MediawikiListExtractor(listId, def)
 if (args.page) {
