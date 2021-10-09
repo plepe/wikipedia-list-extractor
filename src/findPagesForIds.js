@@ -14,7 +14,7 @@ module.exports = function (source, ids, options, callback) {
     ids.forEach(id => {
       const fieldId = template.render({ id }).split(/\|/)
       if (fieldId.length === 1) {
-        console.error('Can\'t parse id', id)
+        // no results in this category
       }
       else if (fieldId[0] in idFields) {
         idFields[fieldId[0]].push(fieldId[1])
@@ -28,7 +28,7 @@ module.exports = function (source, ids, options, callback) {
   }
 
   if (Object.keys(idFields).length === 0) {
-    return callback(new Error('no valid ids found'))
+    return callback(null, [])
   }
 
   // if 'template' is an array, query all templates and merge results together
