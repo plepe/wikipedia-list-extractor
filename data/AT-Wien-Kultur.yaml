@@ -13,6 +13,8 @@ param:
       {% elseif id starts with 'Q' %}
       field=WD-Item
       value={{ id }}
+      {% elseif id starts with 'Liste ' %}
+      page={{ id|split('#')[0] }}
       {% endif %}
     renderedAnchorField: id
     anchorPrefix: id-
@@ -47,7 +49,7 @@ param:
     renderedIdTemplate: |-
       {% if item.id %}id-{{ item.id }}{% endif %}
       {{ item.wikidata }}
-      index-{{ index }}
+      {{ page }}#{{ index }}
     renderedTableClass: wikitable
     renderedWikidataField: wikidata
     source: https://de.wikipedia.org
@@ -56,7 +58,7 @@ param:
     templateIdTemplate: |-
       {% if item.ID %}id-{{ item.ID }}{% endif %}
       {{ attribute(item, 'WD-Item') }}
-      index-{{ index }}
+      {{ page }}#{{ index }}
     templateWikidataField: WD-Item
   - language: de
     pageTitleMatch: Liste der Gedenktafeln und Gedenksteine in Wien
@@ -70,6 +72,8 @@ param:
       {% elseif id starts with 'Q' %}
       field=WD-Item
       value={{ id }}
+      {% elseif id starts with 'Liste ' %}
+      page={{ id|split('#')[0] }}
       {% endif %}
     renderedAnchorField: id
     renderedAnchorPrefix: id-
@@ -109,7 +113,7 @@ param:
       {% if item.id %}id-{{ item.id }}{% endif %}
       {{ item.wikidata }}
       {% if item.vtg %}vtg-{{ item.vtg }}{% endif %}
-      index-{{ index }}
+      {{ page }}#{{ index }}
     renderedTableClass: wikitable
     renderedWikidataField: wikidata
     source: https://de.wikipedia.org
@@ -120,6 +124,6 @@ param:
       {% if item.ID %}id-{{ item.ID }}{% endif %}
       {{ attribute(item, 'WD-Item') }}
       {% if item.VTG %}vtg-{{ item.VTG }}{% endif %}
-      index-{{ index }}
+      {{ page }}#{{ index }}
     templateAnchorField: ID
     templateWikidataField: WD-Item

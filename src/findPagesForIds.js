@@ -9,6 +9,8 @@ const parseIdToQuery = require('./parseIdToQuery')
 
 module.exports = function (source, ids, options, callback) {
   let idFields = { '': ids }
+  let pages = []
+
   if (source.idToQuery) {
     const template = Twig.twig({ data: source.idToQuery, async: false })
     idFields = {}
@@ -22,13 +24,16 @@ module.exports = function (source, ids, options, callback) {
           idFields[query.field] = [query.value]
         }
       }
+      else if (query.page) {
+        pages.push(query.page)
+      }
     })
   } else if (source.templateIdField) {
     idFields = {}
     idFields[source.templateIdField] = ids
   }
 
-  if (Object.keys(idFields).length === 0) {
+  if (Object.keys(idFields).length === 0 && pages.length === 0) {
     return callback(null, [])
   }
 
@@ -52,7 +57,7 @@ module.exports = function (source, ids, options, callback) {
       (err, list) => {
         if (err) { return callback(err) }
 
-        callback(err, list.flat())
+        callback(err, list.flat().concat(pages))
       }
     )
   }
@@ -62,7 +67,7 @@ module.exports = function (source, ids, options, callback) {
     (ids, idField, done) => findPageForIds(source, idField, ids, options, done),
     (err, list) => {
       if (err) { return callback(err) }
-      callback(err, Object.values(list).flat())
+      callback(err, Object.values(list).flat().concat(pages))
     }
   )
 }
