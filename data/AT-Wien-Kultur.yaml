@@ -8,9 +8,11 @@ param:
     pageTitleMatch: Liste der Kunstwerke im öffentlichen Raum in Wien
     idToQuery: |
       {% if id starts with 'id-' %}
-      ID|{{ id|slice(3) }}
+      field=ID
+      value={{ id|slice(3) }}
       {% elseif id starts with 'Q' %}
-      WD-Item|{{ id }}
+      field=WD-Item
+      value={{ id }}
       {% endif %}
     renderedAnchorField: id
     anchorPrefix: id-
@@ -60,11 +62,14 @@ param:
     pageTitleMatch: Liste der Gedenktafeln und Gedenksteine in Wien
     idToQuery: |
       {% if id starts with 'id-' %}
-      ID|{{ id|slice(3) }}
+      field=ID
+      value={{ id|slice(3) }}
       {% elseif id starts with 'vtg-' %}
-      VTG|{{ id|slice(4) }}
+      field=VTG
+      value={{ id|slice(4) }}
       {% elseif id starts with 'Q' %}
-      WD-Item|{{ id }}
+      field=WD-Item
+      value={{ id }}
       {% endif %}
     renderedAnchorField: id
     renderedAnchorPrefix: id-

@@ -5,6 +5,7 @@ const async = {
 }
 
 const regexpEscape = require('./regexpEscape')
+const parseIdToQuery = require('./parseIdToQuery')
 
 module.exports = function (source, ids, options, callback) {
   let idFields = { '': ids }
@@ -12,14 +13,14 @@ module.exports = function (source, ids, options, callback) {
     const template = Twig.twig({ data: source.idToQuery, async: false })
     idFields = {}
     ids.forEach(id => {
-      const fieldId = template.render({ id }).trim().split(/\|/)
-      if (fieldId.length === 1) {
-        // no results in this category
-      }
-      else if (fieldId[0] in idFields) {
-        idFields[fieldId[0]].push(fieldId[1])
-      } else {
-        idFields[fieldId[0]] = [fieldId[1]]
+      let query = parseIdToQuery(template.render({ id }))
+
+      if (query.field && query.value) {
+        if (query.field in idFields) {
+          idFields[query.field].push(query.value)
+        } else {
+          idFields[query.field] = [query.value]
+        }
       }
     })
   } else if (source.templateIdField) {
