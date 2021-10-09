@@ -6,9 +6,11 @@ const async = {
 
 const regexpEscape = require('./regexpEscape')
 const parseIdToQuery = require('./parseIdToQuery')
+const findWikidataItems = require('./findWikidataItems')
 
 module.exports = function (source, ids, options, callback) {
   let idFields = { '': ids }
+  let wikidataMapQueries = []
   let pages = []
 
   if (source.idToQuery) {
@@ -24,6 +26,9 @@ module.exports = function (source, ids, options, callback) {
           idFields[query.field] = [query.value]
         }
       }
+      else if (query.field && query.wikidataValue && query.wikidataProperty) {
+        wikidataMapQueries.push(query)
+      }
       else if (query.page) {
         pages.push(query.page)
       }
@@ -33,6 +38,26 @@ module.exports = function (source, ids, options, callback) {
     idFields[source.templateIdField] = ids
   }
 
+  if (!wikidataMapQueries.length) {
+    return part2(source, idFields, pages, options, callback)
+  }
+
+  findWikidataItems(wikidataMapQueries, (err, result) => {
+    if (err) { return callback(err) }
+
+    result.forEach(query => {
+      if (!(query.field in idFields)) {
+        idFields[query.field] = []
+      }
+
+      idFields[query.field].push(query.itemId)
+    })
+
+    part2(source, idFields, pages, options, callback)
+  })
+}
+
+function part2 (source, idFields, pages, options, callback) {
   if (Object.keys(idFields).length === 0 && pages.length === 0) {
     return callback(null, [])
   }
