@@ -61,7 +61,7 @@ class MediawikiListExtractorSource {
       fun = 'getItemIdsFromTemplate'
     }
 
-    this[fun](items, 'rendered', (err, items, aliases) => {
+    this[fun](items, 'rendered', page, (err, items, aliases) => {
       if (err) { return callback(err) }
 
       Object.keys(items).forEach((id, index) => {
@@ -105,7 +105,7 @@ class MediawikiListExtractorSource {
     )
   }
 
-  getItemIdsViaWikidata (items, prefix, callback) {
+  getItemIdsViaWikidata (items, prefix, page, callback) {
     const result = {}
     const wdMapping = {}
     const field = this.param[prefix + 'WikidataField']
@@ -129,7 +129,7 @@ class MediawikiListExtractorSource {
     })
   }
 
-  getItemIdsFromField (items, prefix, callback) {
+  getItemIdsFromField (items, prefix, page, callback) {
     const result = {}
     const field = this.param[prefix + 'IdField']
 
@@ -140,14 +140,14 @@ class MediawikiListExtractorSource {
     callback(null, result)
   }
 
-  getItemIdsFromTemplate (items, prefix, callback) {
+  getItemIdsFromTemplate (items, prefix, page, callback) {
     const result = {}
     const aliases = {}
     const template = Twig.twig({ data: this.param[prefix + 'IdTemplate'], async: false })
 
     items.forEach((item, index) => {
       const ids = template
-        .render({ item, index })
+        .render({ item, index, page })
         .split(/\n/g)
         .filter(id => id !== '')
       const id = ids.length ? ids[0] : null
@@ -194,7 +194,7 @@ class MediawikiListExtractorSource {
           fun = 'getItemIdsViaWikidata'
         }
 
-        this[fun](items, 'template', (err, items, aliases) => {
+        this[fun](items, 'template', page, (err, items, aliases) => {
           if (err) { return callback(err) }
 
           for (const id in items) {
