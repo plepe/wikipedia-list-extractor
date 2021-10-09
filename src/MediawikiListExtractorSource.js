@@ -143,7 +143,7 @@ class MediawikiListExtractorSource {
   getItemIdsFromTemplate (items, prefix, page, callback) {
     const result = {}
     const aliases = {}
-    const template = Twig.twig({ data: this.param[prefix + 'IdTemplate'], async: false })
+    const template = Twig.twig({ data: this.param[prefix + 'IdTemplate'].replace(/\n/g, '\n\n'), async: false })
 
     items.forEach((item, index) => {
       const ids = template

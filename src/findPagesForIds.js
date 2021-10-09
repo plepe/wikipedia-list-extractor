@@ -12,7 +12,7 @@ module.exports = function (source, ids, options, callback) {
     const template = Twig.twig({ data: source.idToQuery, async: false })
     idFields = {}
     ids.forEach(id => {
-      const fieldId = template.render({ id }).split(/\|/)
+      const fieldId = template.render({ id }).trim().split(/\|/)
       if (fieldId.length === 1) {
         // no results in this category
       }
