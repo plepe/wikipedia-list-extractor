@@ -1,4 +1,4 @@
-openstreetmap-tag: null
+openstreetmap-tag: ref:at:bda
 title:
   de: Denkmalgeschützte Objekte in Österreich (heris)
 organisation:
@@ -6,13 +6,33 @@ organisation:
 param:
   language: de
   source: https://de.wikipedia.org
-  wikidataIdProperty: P9154
-  wikidataListProperty: P2817
+  idToQuery: |
+    {% if id starts with 'id-' %}
+    field=WD-Item
+    wikidataProperty=P9154
+    wikidataValue={{ id|slice(3) }}
+    {% elseif id starts with 'objid-' %}
+    field=ObjektID
+    value={{ id|slice(6) }}
+    {% elseif id starts with 'Q' %}
+    field=WD-Item
+    value={{ id }}
+    {% elseif id starts with 'Liste ' %}
+    page={{ id|split('#')[0] }}
+    {% endif %}
   template: Denkmalliste Österreich Tabellenzeile
+  templateIdTemplate: |-
+    {{ attribute(item, 'WD-Item') }}
+    {% if item.ObjektID %}objid-{{ item.ObjektID }}{% endif %}
+    {{ page }}#{{ index }}
   templateWikidataField: WD-Item
   templateAnchorField: WD-Item
   renderedTableClass: Denkmalliste-Tabelle
-  renderedIdField: heris-id
+  renderedIdTemplate: |-
+    {{ item.wikidata }}
+    id-{{ attribute(item, 'heris-id') }}
+    {% if attribute(item, 'object-id') %}objid-{{ attribute(item, 'object-id') }}{% endif %}
+    {{ page }}#{{ index }}
   renderedWikidataField: wikidata
   renderedAnchorField: wikidata
   renderedFields:
@@ -47,3 +67,8 @@ param:
     description:
       column: 4
       type: html
+  wikidataFields:
+    - property: P9154
+      field: heris-id
+  wikidataIdTemplate: |
+    {% if item.P9154 %}id-{{ item.P9154.values[0] }}{% endif %}
