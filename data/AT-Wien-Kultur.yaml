@@ -64,6 +64,9 @@ param:
       {{ attribute(item, 'WD-Item') }}
       {{ page }}#{{ index }}
     templateWikidataField: WD-Item
+    wikidataFields:
+      - property: P9154
+        field: heris-id
   - language: de
     pageTitleMatch: Liste der Gedenktafeln und Gedenksteine in Wien
     idToQuery: |

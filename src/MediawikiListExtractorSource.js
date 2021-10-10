@@ -228,6 +228,45 @@ class MediawikiListExtractorSource {
     )
   }
 
+  loadWikidataFields (items, callback) {
+    const wikidataIds = []
+    const index = {}
+
+    items.forEach(item => {
+      if (item.rendered && this.param.renderedWikidataField && this.param.renderedWikidataField in item.rendered) {
+        const qid = item.rendered[this.param.renderedWikidataField]
+        wikidataIds.push(qid)
+        index[qid] = item
+      } else if (item.raw && this.param.templateWikidataField && this.param.templateWikidataField in item.raw) {
+        const qid = item.raw[this.param.templateWikidataField]
+        wikidataIds.push(qid)
+        index[qid] = item
+      }
+    })
+
+    const properties = []
+    this.param.wikidataFields.forEach(field =>
+      properties.push(field.property)
+    )
+
+    let query = 'SELECT ?item ' + properties.map(p => '?' + p).join(' ') + ' ' +
+      'WHERE { ' + properties.map(p => '?item wdt:' + p + ' ?' + p + '.').join('\n') +
+      'VALUES ?item {' + wikidataIds.map(id => 'wd:' + id).join(' ') + '}.}'
+
+    wikidata.run(query, {properties}, (err, result) => {
+      if (err) { return callback(err) }
+
+      Object.keys(result).forEach(qid => {
+        const qitem = result[qid]
+        const item = index[qid]
+
+        item.wikidata = qitem
+      })
+
+      callback(null, items)
+    })
+  }
+
   /**
    * Load all items on the specified wikipedia page
    * @param {string} page - Title of the page
@@ -269,7 +308,11 @@ class MediawikiListExtractorSource {
           })
         }
 
-        callback(err, result)
+        if (this.param.wikidataFields) {
+          this.loadWikidataFields(result, callback)
+        } else {
+          callback(err, result)
+        }
       }
     )
   }
