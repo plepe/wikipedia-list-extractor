@@ -67,6 +67,8 @@ param:
     wikidataFields:
       - property: P9154
         field: heris-id
+    wikidataIdTemplate: |
+      {% if item.P9154 %}heris-{{ item.P9154.values[0] }}{% endif %}
   - language: de
     pageTitleMatch: Liste der Gedenktafeln und Gedenksteine in Wien
     idToQuery: |

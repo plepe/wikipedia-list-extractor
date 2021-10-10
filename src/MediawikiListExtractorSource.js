@@ -256,11 +256,24 @@ class MediawikiListExtractorSource {
     wikidata.run(query, {properties}, (err, result) => {
       if (err) { return callback(err) }
 
+      let template
+      if (this.param.wikidataIdTemplate) {
+        template = Twig.twig({ data: this.param.wikidataIdTemplate.replace(/\n/g, '\n\n'), async: false })
+      }
+
       Object.keys(result).forEach(qid => {
         const qitem = result[qid]
         const item = index[qid]
 
         item.wikidata = qitem
+
+        if (template) {
+          let ids = template.render({item: qitem}).split(/\n/g).filter(id => id)
+          item.aliases = item.aliases.concat(ids)
+          ids.forEach(id => {
+            this.aliases[id] = item.id
+          })
+        }
       })
 
       callback(null, items)
