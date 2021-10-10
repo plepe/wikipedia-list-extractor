@@ -2,7 +2,8 @@ const Twig = require('twig')
 const parseMediawikiTemplate = require('parse-mediawiki-template')
 const async = {
   eachSeries: require('async/eachSeries'),
-  parallel: require('async/parallel')
+  parallel: require('async/parallel'),
+  setImmediate: require('async/setImmediate')
 }
 
 const parseRenderedPage = require('./parseRenderedPage')
@@ -30,7 +31,7 @@ class MediawikiListExtractorSource {
       .then(res => res.json())
       .then(result => {
         const wikitext = result.parse.wikitext['*']
-        callback(null, wikitext)
+        async.setImmediate(() => callback(null, wikitext))
       })
       .catch(error => callback(error))
   }
@@ -43,7 +44,9 @@ class MediawikiListExtractorSource {
 
     global.fetch(url)
       .then(res => res.text())
-      .then(body => callback(null, body))
+      .then(body => {
+        async.setImmediate(() => callback(null, body))
+      })
       .catch(error => callback(error))
   }
 
