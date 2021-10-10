@@ -84,10 +84,7 @@ class MediawikiListExtractorSource {
           }
 
           if (aliases) {
-            this.cache[id].aliases = aliases[id]
-            aliases[id].forEach(alias => {
-              this.aliases[alias] = id
-            })
+            this.addAliases(this.cache[id], aliases[id])
           }
         }
 
@@ -215,12 +212,7 @@ class MediawikiListExtractorSource {
               this.cache[id] = { id, page, url, raw }
             }
 
-            if (aliases) {
-              this.cache[id].aliases = aliases[id]
-              aliases[id].forEach(alias => {
-                this.aliases[alias] = id
-              })
-            }
+            this.addAliases(this.cache[id], aliases[id])
 
             this.pageCache[page].raw.push(id)
           }
@@ -229,6 +221,20 @@ class MediawikiListExtractorSource {
         })
       }
     )
+  }
+
+  addAliases (item, aliases) {
+    if (!('aliases' in item)) {
+      item.aliases = []
+    }
+
+    aliases.forEach(alias => {
+      if (!item.aliases.includes(alias)) {
+        item.aliases.push(alias)
+      }
+
+      this.aliases[alias] = item.id
+    })
   }
 
   loadWikidataFields (items, callback) {
@@ -272,10 +278,8 @@ class MediawikiListExtractorSource {
 
         if (template) {
           let ids = template.render({item: qitem}).split(/\n/g).filter(id => id)
-          item.aliases = item.aliases.concat(ids)
-          ids.forEach(id => {
-            this.aliases[id] = item.id
-          })
+
+          this.addAliases(item, ids)
         }
       })
 
