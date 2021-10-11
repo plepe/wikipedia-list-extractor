@@ -317,6 +317,14 @@ class MediawikiListExtractorSource {
    * @param {function} callback - Callback function which will be called with (err, result), where result is an unordered array of all items.
    */
   getPageItems (page, options, callback) {
+    // illegal page title -> ignore
+    if (this.param.pageTitleMatch) {
+      let re = new RegExp(this.param.pageTitleMatch)
+      if (!page.match(re)) {
+        return callback(null, [])
+      }
+    }
+
     const result = []
 
     if (typeof options === 'function') {
