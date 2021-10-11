@@ -20,8 +20,8 @@ param:
       {% elseif id starts with 'Liste ' %}
       page={{ id|split('#')[0] }}
       {% endif %}
-    renderedAnchorField: id
-    anchorPrefix: id-
+    renderedAnchorTemplate: |
+      {% if item.id %}id-{{ item.id }}{% endif %}
     renderedFields:
       commons-category:
         1replaceOld: /<a href="https://commons.wikimedia.org/wiki/Category:([^"]*)".*/m
@@ -58,7 +58,8 @@ param:
     renderedWikidataField: wikidata
     source: https://de.wikipedia.org
     template: WLPA-AT-Zeile
-    templateAnchorField: ID
+    templateAnchorTemplate: |
+      {% if item.ID %}id-{{ item.ID }}{% endif %}
     templateIdTemplate: |-
       {% if item.ID %}id-{{ item.ID }}{% endif %}
       {{ attribute(item, 'WD-Item') }}
@@ -88,8 +89,6 @@ param:
       wikidataProperty=P9154
       wikidataValue={{ id|slice(6) }}
       {% endif %}
-    renderedAnchorField: id
-    renderedAnchorPrefix: id-
     renderedFields:
       commons-category:
         1replaceOld: /<a href="https://commons.wikimedia.org/wiki/Category:([^"]*)".*/m
@@ -131,12 +130,10 @@ param:
     renderedWikidataField: wikidata
     source: https://de.wikipedia.org
     template: Gedenktafel Österreich Tabellenzeile
-    anchorPrefix: id-
     templateIdField: ID
     templateIdTemplate: |-
       {% if item.ID %}id-{{ item.ID }}{% endif %}
       {{ attribute(item, 'WD-Item') }}
       {% if item.VTG %}vtg-{{ item.VTG }}{% endif %}
       {{ page }}#{{ index }}
-    templateAnchorField: ID
     templateWikidataField: WD-Item

@@ -64,6 +64,11 @@ class MediawikiListExtractorSource {
       fun = 'getItemIdsFromTemplate'
     }
 
+    let anchorTemplate
+    if (this.param.renderedAnchorTemplate) {
+      anchorTemplate = Twig.twig({ data: this.param.renderedAnchorTemplate, async: false })
+    }
+
     this[fun](items, 'rendered', page, (err, items, aliases) => {
       if (err) { return callback(err) }
 
@@ -72,7 +77,12 @@ class MediawikiListExtractorSource {
 
         let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
         if (this.param.renderedAnchorField) {
-          url += '#' + (this.param.anchorPrefix ? this.param.anchorPrefix : '') + item[this.param.renderedAnchorField] + (this.param.anchorSuffix ? this.param.anchorSuffix : '')
+          url += '#' + item[this.param.renderedAnchorField]
+        } else if (this.param.renderedAnchorTemplate) {
+          let anchor = anchorTemplate.render({ item, page, index })
+          if (anchor) {
+            url += '#' + anchor
+          }
         }
 
         if (id) {
@@ -187,6 +197,11 @@ class MediawikiListExtractorSource {
           items = parseMediawikiTemplate(wikitext, this.param.template)
         }
 
+        let anchorTemplate
+        if (this.param.renderedAnchorTemplate) {
+          anchorTemplate = Twig.twig({ data: this.param.templateAnchorTemplate, async: false })
+        }
+
         let fun = 'getItemIdsFromField'
         if (this.param.templateIdTemplate) {
           fun = 'getItemIdsFromTemplate'
@@ -202,8 +217,14 @@ class MediawikiListExtractorSource {
 
             let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
             if (this.param.templateAnchorField) {
-              url += '#' + (this.param.anchorPrefix ? this.param.anchorPrefix : '') + raw[this.param.templateAnchorField] + (this.param.anchorSuffix ? this.param.anchorSuffix : '')
+              url += '#' + raw[this.param.templateAnchorField]
+            } else if (this.param.templateAnchorTemplate) {
+              let anchor = anchorTemplate.render({ item: raw, page, index })
+              if (anchor) {
+                url += '#' + anchor
+              }
             }
+
 
             if (id in this.cache) {
               this.cache[id].raw = raw
