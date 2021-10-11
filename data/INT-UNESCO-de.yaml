@@ -7,8 +7,8 @@ param:
   language: de
   source: https://de.wikipedia.org
   template: Tabellenzeile Welterbe
-  templateIdField: Ref
-  templateAnchorField: Ref
+  rawIdField: Ref
+  rawAnchorField: Ref
   pageTitleMatch: Welterbe (in|im|auf)
   renderedTableClass: wikitable
   renderedIdField: ref

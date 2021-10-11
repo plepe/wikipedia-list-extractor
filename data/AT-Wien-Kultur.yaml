@@ -58,13 +58,13 @@ param:
     renderedWikidataField: wikidata
     source: https://de.wikipedia.org
     template: WLPA-AT-Zeile
-    templateAnchorTemplate: |
+    rawAnchorTemplate: |
       {% if item.ID %}id-{{ item.ID }}{% endif %}
-    templateIdTemplate: |-
+    rawIdTemplate: |-
       {% if item.ID %}id-{{ item.ID }}{% endif %}
       {{ attribute(item, 'WD-Item') }}
       {{ page }}#{{ index }}
-    templateWikidataField: WD-Item
+    rawWikidataField: WD-Item
     wikidataFields:
       - property: P9154
         field: heris-id
@@ -130,10 +130,10 @@ param:
     renderedWikidataField: wikidata
     source: https://de.wikipedia.org
     template: Gedenktafel Österreich Tabellenzeile
-    templateIdField: ID
-    templateIdTemplate: |-
+    rawIdField: ID
+    rawIdTemplate: |-
       {% if item.ID %}id-{{ item.ID }}{% endif %}
       {{ attribute(item, 'WD-Item') }}
       {% if item.VTG %}vtg-{{ item.VTG }}{% endif %}
       {{ page }}#{{ index }}
-    templateWikidataField: WD-Item
+    rawWikidataField: WD-Item

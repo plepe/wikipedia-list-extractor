@@ -21,12 +21,12 @@ param:
     page={{ id|split('#')[0] }}
     {% endif %}
   template: Denkmalliste Österreich Tabellenzeile
-  templateIdTemplate: |-
+  rawIdTemplate: |-
     {{ attribute(item, 'WD-Item') }}
     {% if item.ObjektID %}objid-{{ item.ObjektID }}{% endif %}
     {{ page }}#{{ index }}
-  templateWikidataField: WD-Item
-  templateAnchorField: WD-Item
+  rawWikidataField: WD-Item
+  rawAnchorField: WD-Item
   renderedTableClass: Denkmalliste-Tabelle
   renderedIdTemplate: |-
     {{ item.wikidata }}

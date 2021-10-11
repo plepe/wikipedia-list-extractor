@@ -199,26 +199,26 @@ class MediawikiListExtractorSource {
 
         let anchorTemplate
         if (this.param.renderedAnchorTemplate) {
-          anchorTemplate = Twig.twig({ data: this.param.templateAnchorTemplate, async: false })
+          anchorTemplate = Twig.twig({ data: this.param.rawAnchorTemplate, async: false })
         }
 
         let fun = 'getItemIdsFromField'
-        if (this.param.templateIdTemplate) {
+        if (this.param.rawIdTemplate) {
           fun = 'getItemIdsFromTemplate'
-        } else if (this.param.templateWikidataField) {
+        } else if (this.param.rawWikidataField) {
           fun = 'getItemIdsViaWikidata'
         }
 
-        this[fun](items, 'template', page, (err, items, aliases) => {
+        this[fun](items, 'raw', page, (err, items, aliases) => {
           if (err) { return callback(err) }
 
           for (const id in items) {
             const raw = items[id]
 
             let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
-            if (this.param.templateAnchorField) {
-              url += '#' + raw[this.param.templateAnchorField]
-            } else if (this.param.templateAnchorTemplate) {
+            if (this.param.rawAnchorField) {
+              url += '#' + raw[this.param.rawAnchorField]
+            } else if (this.param.rawAnchorTemplate) {
               let anchor = anchorTemplate.render({ item: raw, page, index })
               if (anchor) {
                 url += '#' + anchor
@@ -267,8 +267,8 @@ class MediawikiListExtractorSource {
         const qid = item.rendered[this.param.renderedWikidataField]
         wikidataIds.push(qid)
         index[qid] = item
-      } else if (item.raw && this.param.templateWikidataField && this.param.templateWikidataField in item.raw) {
-        const qid = item.raw[this.param.templateWikidataField]
+      } else if (item.raw && this.param.rawWikidataField && this.param.rawWikidataField in item.raw) {
+        const qid = item.raw[this.param.rawWikidataField]
         wikidataIds.push(qid)
         index[qid] = item
       }
