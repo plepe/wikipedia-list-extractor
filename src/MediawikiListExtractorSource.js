@@ -212,7 +212,7 @@ class MediawikiListExtractorSource {
         this[fun](items, 'raw', page, (err, items, aliases) => {
           if (err) { return callback(err) }
 
-          for (const id in items) {
+          Object.keys(items).forEach((id, index) => {
             const raw = items[id]
 
             let url = this.param.source + '/wiki/' + encodeURIComponent(page.replace(/ /g, '_'))
@@ -236,7 +236,7 @@ class MediawikiListExtractorSource {
             this.addAliases(this.cache[id], aliases[id])
 
             this.pageCache[page].raw.push(id)
-          }
+          })
 
           callback(null, this.pageCache[page].raw)
         })
