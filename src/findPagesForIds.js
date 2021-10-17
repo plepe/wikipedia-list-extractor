@@ -33,9 +33,9 @@ module.exports = function (source, ids, options, callback) {
         pages.push(query.page)
       }
     })
-  } else if (source.templateIdField) {
+  } else if (source.rawIdField) {
     idFields = {}
-    idFields[source.templateIdField] = ids
+    idFields[source.rawIdField] = ids
   }
 
   if (!wikidataMapQueries.length) {
