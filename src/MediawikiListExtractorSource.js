@@ -233,7 +233,9 @@ class MediawikiListExtractorSource {
               this.cache[id] = { id, page, url, raw }
             }
 
-            this.addAliases(this.cache[id], aliases[id])
+            if (aliases) {
+              this.addAliases(this.cache[id], aliases[id])
+            }
 
             this.pageCache[page].raw.push(id)
           })
