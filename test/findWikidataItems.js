@@ -15,6 +15,16 @@ describe('findWikidataItems()', function () {
     })
   })
 
+  it('search for one item with a link to another wikidata object', function (done) {
+    findWikidataItems([
+      { P1028: 'Q99619679' }
+    ],
+    (err, result) => {
+      assert.deepEqual(result[0], ['Q99619614'])
+      done(err)
+    })
+  })
+
   it('search for two items (same property)', function (done) {
     findWikidataItems([
       { P9154: '24538' },
