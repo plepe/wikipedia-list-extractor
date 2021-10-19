@@ -12,12 +12,14 @@ module.exports = function (source, ids, options, callback) {
   let idFields = { '': ids }
   let wikidataMapQueries = []
   let pages = []
+  let queries = []
 
   if (source.idToQuery) {
     const template = Twig.twig({ data: source.idToQuery, async: false })
     idFields = {}
     ids.forEach(id => {
       let query = parseIdToQuery(template.render({ id }))
+      queries.push(query)
 
       if (query.field && query.value) {
         if (query.field in idFields) {
@@ -27,7 +29,9 @@ module.exports = function (source, ids, options, callback) {
         }
       }
       else if (query.field && query.wikidataValue && query.wikidataProperty) {
-        wikidataMapQueries.push(query)
+        let q = {}
+        q[query.wikidataProperty] = query.wikidataValue
+        wikidataMapQueries.push(q)
       }
       else if (query.page) {
         pages.push(query.page)
@@ -45,12 +49,15 @@ module.exports = function (source, ids, options, callback) {
   findWikidataItems(wikidataMapQueries, (err, result) => {
     if (err) { return callback(err) }
 
-    result.forEach(query => {
+    result.forEach((r, index) => {
+      const query = queries[index]
+      console.log(query, r)
+
       if (!(query.field in idFields)) {
         idFields[query.field] = []
       }
 
-      idFields[query.field].push(query.itemId)
+      idFields[query.field].push(r[0])
     })
 
     part2(source, idFields, pages, options, callback)
