@@ -1,5 +1,21 @@
 const wikidata = require('./wikidata')
 
+function wikidataRun (str, options, callback) {
+  global.fetch('https://query.wikidata.org/sparql?query=' + encodeURIComponent(str),
+    {
+      headers: {
+        // lower case to avoid forbidden request headers, see:
+        // https://github.com/ykzts/node-xmlhttprequest/pull/18/commits/7f73611dc3b0dd15b0869b566f60b64cd7aa3201
+        'user-agent': 'wikipedia-list-extractor',
+        accept: 'application/json'
+      },
+      responseType: 'json'
+    })
+    .then(response => response.json())
+    .then(result => callback(null, result))
+    .catch(err => global.setTimeout(() => callback(err), 0))
+}
+
 module.exports = function findWikidataItems (queries, callback) {
   let query = []
   const properties = {}
