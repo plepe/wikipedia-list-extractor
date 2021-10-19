@@ -19,7 +19,7 @@ function wikidataRun (str, options, callback) {
 module.exports = function findWikidataItems (queries, callback) {
   let query = []
   const properties = {}
-  const finalResult = []
+  const finalResult = new Array(queries.length)
 
   if (queries.length === 0) {
     return callback(null, [])
@@ -41,27 +41,37 @@ module.exports = function findWikidataItems (queries, callback) {
 
   query = 'SELECT ?item ' + Object.keys(properties).map(p => '?' + p).join(' ') + ' WHERE {' + query.join('\nunion') + '}'
 
-  wikidata.run(query, { properties: Object.keys(properties) },
-    (err, result) => {
+  wikidataRun(query, { properties: Object.keys(properties) },
+    (err, _result) => {
       if (err) { return callback(err) }
 
-      for (const qid in result) {
-        for (const pid in result[qid]) {
-          result[qid][pid].values.forEach(v => {
-            queries.forEach((q, index) => {
-              for (const k in q) {
-                if (!(k in q) || q[k] !== v) { return }
-              }
+      const result = _result.results.bindings
+      result.forEach(item => {
+        const id = item.item.value.match(/(Q[0-9]+)$/)[1]
+        delete item.item
 
-              if (!finalResult[index]) {
-                finalResult[index] = []
-              }
+        queries.forEach((q, index) => {
+          const matches = Object.keys(item).filter(pid => {
+            let value = item[pid].value
+            if (item[pid].type === 'uri') {
+              value = item[pid].value.match(/(Q[0-9]+)$/)[1]
+            }
 
-              finalResult[index].push(qid)
-            })
+            return q[pid] === value
           })
-        }
-      }
+
+          if (!matches.length) {
+            return
+          }
+
+          console.log(finalResult, index, id)
+          if (!finalResult[index]) {
+            finalResult[index] = []
+          }
+
+          finalResult[index].push(id)
+        })
+      })
 
       callback(null, finalResult)
     }
