@@ -32,9 +32,9 @@ module.exports = function findWikidataItems (queries, callback) {
             })
           })
         }
-
-        callback(null, queries)
       }
+
+      callback(null, queries)
     }
   )
 }
