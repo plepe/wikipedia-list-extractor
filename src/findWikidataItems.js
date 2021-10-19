@@ -68,7 +68,6 @@ module.exports = function findWikidataItems (queries, callback) {
             return
           }
 
-          console.log(finalResult, index, id)
           if (!finalResult[index]) {
             finalResult[index] = []
           }

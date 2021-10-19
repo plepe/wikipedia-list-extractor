@@ -51,7 +51,6 @@ module.exports = function (source, ids, options, callback) {
 
     result.forEach((r, index) => {
       const query = queries[index]
-      console.log(query, r)
 
       if (!(query.field in idFields)) {
         idFields[query.field] = []
