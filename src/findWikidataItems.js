@@ -16,7 +16,12 @@ function wikidataRun (str, options, callback) {
     .catch(err => global.setTimeout(() => callback(err), 0))
 }
 
-module.exports = function findWikidataItems (queries, callback) {
+module.exports = function findWikidataItems (queries, options, callback) {
+  if (typeof options === 'function') {
+    callback = options
+    options = {}
+  }
+
   let query = []
   const properties = {}
   const finalResult = new Array(queries.length)
@@ -45,7 +50,10 @@ module.exports = function findWikidataItems (queries, callback) {
 
   query = 'SELECT ?item ' + Object.keys(properties).map(p => '?' + p).join(' ') + ' WHERE {' + query.join('\nunion') + '}'
 
-  wikidataRun(query, { properties: Object.keys(properties) },
+  const _options = JSON.parse(JSON.stringify(options))
+  _options.properties = Object.keys(properties)
+
+  wikidataRun(query, _options,
     (err, _result) => {
       if (err) { return callback(err) }
 
