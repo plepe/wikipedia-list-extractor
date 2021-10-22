@@ -18,6 +18,14 @@ class MediawikiListExtractor {
   }
 
   /**
+   * Clear either the whole cache or the cache for a specific item
+   * @param {string} [id] - The id (or an alias) of the item to be cleared.
+   */
+  cacheClear (id=null) {
+    this.sources.forEach(source => source.cacheClear(id))
+  }
+
+  /**
    * Load all items on the specified wikipedia page
    * @param {string} page - Title of the page
    * @param {object} options - Options

@@ -21,6 +21,27 @@ class MediawikiListExtractorSource {
     this.options = options
   }
 
+  cacheClear (id=null) {
+    if (id === null) {
+      this.cache = {}
+      this.aliases = {}
+      this.pageCache = {}
+      return
+    }
+
+    if (this.aliases) {
+      id = this.aliases[id]
+    }
+
+    if (id in this.cache) {
+      const item = this.cache[id]
+
+      if (item.aliases) {
+        item.aliases.forEach(alias => delete this.aliases[alias])
+      }
+    }
+  }
+
   loadSource (param, callback) {
     let url = param.source + '/w/api.php?action=parse&format=json&prop=wikitext&page=' + encodeURIComponent(param.title)
     if (this.options.proxy) {
