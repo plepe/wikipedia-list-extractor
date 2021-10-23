@@ -39,6 +39,8 @@ class MediawikiListExtractorSource {
       if (item.aliases) {
         item.aliases.forEach(alias => delete this.aliases[alias])
       }
+
+      delete this.cache[id]
     }
   }
 
