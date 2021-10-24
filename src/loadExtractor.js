@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const yaml = require('yaml')
 
 const MediawikiListExtractor = require('./MediawikiListExtractor.js')
 
@@ -25,10 +26,10 @@ module.exports = function loadExtractor (id, def, callback = null) {
     return callback(null, extractors[id])
   }
 
-  fs.readFile(path.join(__dirname, '../data/' + id + '.json'), (err, def) => {
+  fs.readFile(path.join(__dirname, '../data/' + id + '.yaml'), (err, def) => {
     if (err) { return callback(err) }
 
-    def = JSON.parse(def)
+    def = yaml.parse(def)
 
     extractors[id] = new MediawikiListExtractor(id, def)
     callback(null, extractors[id])

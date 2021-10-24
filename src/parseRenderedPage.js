@@ -19,7 +19,10 @@ module.exports = function parseProcessedPage (def, body) {
     })
   }
 
-  const table = dom.getElementsByClassName(def.renderedTableClass)[0]
+  const table = dom.querySelector('table' + (def.renderedTableClass ? '.' + def.renderedTableClass : ''))
+  if (!table) {
+    throw new Error('no table found')
+  }
 
   const trs = Array.from(table.rows)
   trs.splice(0, 1) // ignore header row

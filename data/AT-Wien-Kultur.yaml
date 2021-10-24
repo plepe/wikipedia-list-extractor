@@ -1,0 +1,139 @@
+title:
+  de: DenkmalgeschÃ¼tzte Objekte in Österreich
+organisation:
+  de: Bundesdenkmalamt Österreich
+openstreetmap-tag: ref:wien:kultur
+param:
+  - language: de
+    pageTitleMatch: Liste der Kunstwerke im öffentlichen Raum in Wien
+    idToQuery: |
+      {% if id starts with 'id-' %}
+      field=ID
+      value={{ id|slice(3) }}
+      {% elseif id starts with 'Q' %}
+      field=WD-Item
+      value={{ id }}
+      {% elseif id starts with 'heris-' %}
+      field=WD-Item
+      wikidataProperty=P9154
+      wikidataValue={{ id|slice(6) }}
+      {% elseif id starts with 'Liste ' %}
+      page={{ id|split('#')[0] }}
+      {% endif %}
+    renderedAnchorTemplate: |
+      {% if item.id %}id-{{ item.id }}{% endif %}
+    renderedFields:
+      commons-category:
+        1replaceOld: /<a href="https://commons.wikimedia.org/wiki/Category:([^"]*)".*/m
+        column: 1
+        domAttribute: href
+        domQuery: a
+        replaceNew: $1
+        type: html
+      description:
+        column: 4
+        type: html
+      id:
+        column: 2
+        regexp: /ID:<\/abbr>\s*<a[^>]*>([0-9]+)</
+        type: html
+      image:
+        column: 0
+        type: image
+      title:
+        column: 2
+        regexp: /^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m
+        type: html
+      wikidata:
+        column: 2
+        domAttribute: href
+        domQuery: a[title=Wikidata]
+        regexp: //(Q\d+)$/
+        type: html
+    renderedIdTemplate: |-
+      {% if item.id %}id-{{ item.id }}{% endif %}
+      {{ item.wikidata }}
+      {{ page }}#{{ index }}
+    renderedTableClass: wikitable
+    renderedWikidataField: wikidata
+    source: https://de.wikipedia.org
+    template: WLPA-AT-Zeile
+    rawAnchorTemplate: |
+      {% if item.ID %}id-{{ item.ID }}{% endif %}
+    rawIdTemplate: |-
+      {% if item.ID %}id-{{ item.ID }}{% endif %}
+      {{ attribute(item, 'WD-Item') }}
+      {{ page }}#{{ index }}
+    rawWikidataField: WD-Item
+    wikidataFields:
+      - property: P9154
+        field: heris-id
+    wikidataIdTemplate: |
+      {% if item.P9154 %}heris-{{ item.P9154.values[0] }}{% endif %}
+  - language: de
+    pageTitleMatch: Liste der Gedenktafeln und Gedenksteine in Wien
+    idToQuery: |
+      {% if id starts with 'id-' %}
+      field=ID
+      value={{ id|slice(3) }}
+      {% elseif id starts with 'vtg-' %}
+      field=VTG
+      value={{ id|slice(4) }}
+      {% elseif id starts with 'Q' %}
+      field=WD-Item
+      value={{ id }}
+      {% elseif id starts with 'Liste ' %}
+      page={{ id|split('#')[0] }}
+      {% elseif id starts with 'heris-' %}
+      field=WD-Item
+      wikidataProperty=P9154
+      wikidataValue={{ id|slice(6) }}
+      {% endif %}
+    renderedFields:
+      commons-category:
+        1replaceOld: /<a href="https://commons.wikimedia.org/wiki/Category:([^"]*)".*/m
+        column: 1
+        domAttribute: href
+        domQuery: a
+        replaceNew: $1
+        type: html
+      description:
+        column: 6
+        type: html
+      id:
+        column: 3
+        type: html
+        regexp: /ID:<\/abbr>\s*<a[^>]*>([0-9]+)</
+      vtg:
+        column: 3
+        regexp: /www.viennatouristguide.at/Gedenktafeln/([^"]*)"/
+        type: html
+      image:
+        column: 0
+        type: image
+      title:
+        column: 3
+        regexp: /^(?:<a [^>]+>)?([^<]*)(?:</a>)?<br>.*$/m
+        type: html
+      wikidata:
+        column: 3
+        domAttribute: href
+        domQuery: a[title=Wikidata]
+        regexp: //(Q\d+)$/
+        type: html
+    renderedIdTemplate: |-
+      {% if item.id %}id-{{ item.id }}{% endif %}
+      {{ item.wikidata }}
+      {% if item.vtg %}vtg-{{ item.vtg }}{% endif %}
+      {{ page }}#{{ index }}
+    renderedTableClass: wikitable
+    renderedWikidataField: wikidata
+    source: https://de.wikipedia.org
+    template: Gedenktafel Österreich Tabellenzeile
+    rawIdField: ID
+    rawIdTemplate: |-
+      {% if item.ID %}id-{{ item.ID }}{% endif %}
+      {{ attribute(item, 'WD-Item') }}
+      {% if item.VTG %}vtg-{{ item.VTG }}{% endif %}
+      {{ page }}#{{ index }}
+    rawWikidataField: WD-Item
