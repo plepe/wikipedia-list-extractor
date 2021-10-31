@@ -29,7 +29,7 @@ module.exports = function loadExtractor (id, def, callback = null) {
   fs.readFile(path.join(__dirname, '../data/' + id + '.yaml'), (err, def) => {
     if (err) { return callback(err) }
 
-    def = yaml.parse(def)
+    def = yaml.parse(def.toString())
 
     extractors[id] = new MediawikiListExtractor(id, def)
     callback(null, extractors[id])
