@@ -1,0 +1,96 @@
+title:
+  de: Wiener Gemeindebauten
+organisation:
+  de: Wiener Wohnen
+param:
+    language: de
+    pageTitleMatch: Liste der Wiener Gemeindebauten
+    idToQuery: |
+      {% if id starts with 'id-' %}
+      field=ID
+      value={{ id|slice(3) }}
+      {% elseif id starts with 'Q' %}
+      field=WD-Item
+      value={{ id }}
+      {% elseif id starts with 'Liste ' %}
+      page={{ id|split('#')[0] }}
+      {% endif %}
+    renderedAnchorTemplate: |
+      {% if item.id %}id-{{ item.id }}{% endif %}
+    renderedFields:
+      commons-category:
+        column: 1
+        domAttribute: href
+        domQuery: a
+        type: html
+      address:
+        column: 3
+        type: html
+        regexp: /^([^<]*)</m
+      constructionPeriod:
+        column: 4
+        type: html
+      architects:
+        column: 5
+        type: html
+      artworks:
+        column: 6
+        type: html
+      flats:
+        column: 7
+        type: html
+      notes:
+        column: 8
+        type: html
+      id:
+        column: 0
+        regexp: / href="https:\/\/www.wienerwohnen.at[^"]+">([0-9]+)</
+        type: html
+      image:
+        column: 1
+        type: image
+      title:
+        column: 0
+        regexp: /^(?:<a [^>]+>)?([^<]*)(?:<\/a>)?<br>/m
+        type: html
+      article:
+        column: 0
+        regexp: /^(?:<a [^>]+ title="([^">]+)">)/
+        type: html
+      wikidata:
+        column: 0
+        domAttribute: href
+        domQuery: a[title=Wikidata]
+        regexp: //(Q\d+)$/
+        type: html
+      heris-id:
+        column: 0
+        regexp: /BDA:\s*<\/span>&nbsp;<a [^>]+>([0-9]+)</m
+        type: html
+      obj-id:
+        column: 0
+        regexp: /Objekt-ID:\s*<\/span>&nbsp;([0-9]+)</m
+        type: html
+    renderedIdTemplate: |-
+      {% if item.id %}id-{{ item.id }}{% endif %}
+      {{ item.wikidata }}
+      {{ page }}#{{ index }}
+    renderedTableClass: wikitable
+    renderedWikidataField: wikidata
+    source: https://de.wikipedia.org
+    template: Gemeindebau Wien Tabellenzeile
+    rawAnchorTemplate: |
+      {% if item.ID %}id-{{ item.ID }}{% endif %}
+    rawIdTemplate: |-
+      {% if item.ID %}id-{{ item.ID }}{% endif %}
+      {{ attribute(item, 'WD-Item') }}
+      {{ page }}#{{ index }}
+    rawWikidataField: WD-Item
+    wikidataFields:
+      - property: P9154
+        field: heris-id
+      - property: P2951
+        field: objid-id
+    wikidataIdTemplate: |
+      {% if item.P9154 %}heris-{{ item.P9154.values[0] }}{% endif %}
+      {% if item.P2951 %}objid-{{ item.P2951.values[0] }}{% endif %}
