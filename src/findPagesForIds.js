@@ -6,7 +6,7 @@ const async = {
 
 const regexpEscape = require('./regexpEscape')
 const parseIdToQuery = require('./parseIdToQuery')
-const findWikidataItems = require('./findWikidataItems')
+const findWikidataItems = require('find-wikidata-items')
 
 module.exports = function (source, ids, options, callback) {
   let idFields = { '': ids }
@@ -49,7 +49,7 @@ module.exports = function (source, ids, options, callback) {
   findWikidataItems(wikidataMapQueries, (err, result) => {
     if (err) { return callback(err) }
 
-    result.forEach((r, index) => {
+    Object.keys(result).forEach((r, index) => {
       const query = queries[index]
 
       if (!(query.field in idFields)) {
