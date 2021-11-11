@@ -7,12 +7,12 @@
   "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
   "license": "MIT",
   "scripts": {
-    "build": "browserify src/app.js -o dist/app.js",
+    "build": "browserify src/app.js -p esmify -o dist/app.js",
     "lint": "standard --fix src/*.js proxy/*.js test/*.js server.js cli.js node.js",
     "start": "node server.js",
     "prepare": "npm run build",
     "test": "mocha --bail",
-    "watch": "watchify --debug src/app.js -o dist/app.js -v"
+    "watch": "watchify --debug src/app.js -p esmify -o dist/app.js -v"
   },
   "dependencies": {
     "argparse": "^1.0.10",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "browserify": "^16.5.2",
+    "esmify": "^2.1.1",
     "html-escaper": "^3.0.0",
     "http-server": "^0.12.3",
     "md5": "^2.3.0",
