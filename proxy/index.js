@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 
 module.exports = function proxy (param, callback) {
-  let url = 'https://' + param.source + '/'
+  let url = param.source + '/'
 
   if (param.search) {
     url += 'w/index.php?search=' + encodeURIComponent(param.search)
