@@ -15,6 +15,7 @@ const files = [
 const contentTypes = {
   html: 'text/html',
   js: 'application/javascript',
+  yaml: 'text/x-yaml',
   json: 'application/json'
 }
 
@@ -28,7 +29,7 @@ function requestListener (req, res) {
     file = '/index.html'
   }
 
-  if (files.includes(req.url) || req.url.match(/^\/data\/.*\.json$/)) {
+  if (files.includes(req.url) || req.url.match(/^\/data\/.*\.yaml$/)) {
     file = req.url
   }
 

@@ -1,3 +1,4 @@
+const yaml = require('yaml')
 const MediawikiListExtractor = require('./MediawikiListExtractor.js')
 const escHtml = require('html-escaper').escape
 
@@ -12,9 +13,10 @@ function loadExtractor (id, callback) {
     return callback(null, extractors[id])
   }
 
-  global.fetch('data/' + id + '.json')
-    .then(res => res.json())
+  global.fetch('data/' + id + '.yaml')
+    .then(res => res.text())
     .then(def => {
+      def = yaml.parse(def)
       extractors[id] = new MediawikiListExtractor(id, def, options)
       callback(null, extractors[id])
     })
@@ -29,7 +31,7 @@ window.onload = () => {
 
       const as = div.getElementsByTagName('a')
       Array.from(as).forEach(a => {
-        const m = a.getAttribute('href').match(/^([A-Z-]+)\.json$/)
+        const m = a.getAttribute('href').match(/^([a-zA-Z-]+)\.yaml$/)
         if (m) {
           const option = document.createElement('option')
           option.value = m[1]
