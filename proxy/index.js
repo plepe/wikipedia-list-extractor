@@ -12,6 +12,9 @@ module.exports = function proxy (param, callback) {
   if (param.wikitext) {
     url += 'w/api.php?action=parse&format=json&prop=wikitext&page=' + encodeURIComponent(param.wikitext.replace(/ /g, '_'))
   }
+  if (param.query) {
+    url += 'sparql?query=' + encodeURIComponent(param.query)
+  }
 
   // console.log('> ' + url)
 

@@ -75,7 +75,13 @@ function wikidataCompile (query, options = {}) {
 }
 
 function wikidataRun (str, options, callback) {
-  global.fetch('https://query.wikidata.org/sparql?query=' + encodeURIComponent(str),
+  let url = 'https://query.wikidata.org/sparql?query=' + encodeURIComponent(str)
+
+  if (options.proxy) {
+    url = options.proxy + 'source=' + encodeURIComponent('https://query.wikidata.org') + '&query=' + encodeURIComponent(str)
+  }
+
+  global.fetch(url,
     {
       headers: {
         // lower case to avoid forbidden request headers, see:

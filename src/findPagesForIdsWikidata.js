@@ -8,7 +8,10 @@ module.exports = function findPageForIdsWikidata (source, ids, options, callback
     query = 'SELECT ?item ?idProp ?' + listProp + ' ?listUrl WHERE {?item wdt:' + idProp + ' ?idProp.FILTER REGEX(STR(?idProp), "^(' + ids.join('|') + ')$").?item wdt:' + idProp + ' ?idProp.OPTIONAL{?item wdt:' + listProp + ' ?' + listProp + '.?listUrl schema:about ?' + listProp + '. ?listUrl schema:isPartOf <https://de.wikipedia.org/>.}}'
   }
 
-  wikidata.run(query, { properties: ['idProp', listProp, 'listUrl'] },
+  const _options = JSON.parse(JSON.stringify(options))
+  _options.properties = ['idProp', listProp, 'listUrl']
+
+  wikidata.run(query, _options,
     (err, result) => {
       if (err) { return callback(err) }
 

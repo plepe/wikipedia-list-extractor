@@ -149,7 +149,9 @@ class MediawikiListExtractorSource {
 
     const query = 'SELECT ?item ?idProp WHERE { ?item wdt:' + this.param.wikidataIdProperty + ' ?idProp. FILTER (?item in (' + items.map(item => 'wd:' + item[field]).join(', ') + '))}'
 
-    wikidata.run(query, { properties: ['idProp'] }, (err, r) => {
+    const options = JSON.parse(JSON.stringify(this.options))
+    options.properties = ['idProp']
+    wikidata.run(query, options, (err, r) => {
       if (err) { return callback(err) }
 
       for (const wdId in r) {
@@ -308,7 +310,9 @@ class MediawikiListExtractorSource {
       'WHERE { ' + properties.map(p => '?item wdt:' + p + ' ?' + p + '.').join('\n') +
       'VALUES ?item {' + wikidataIds.map(id => 'wd:' + id).join(' ') + '}.}'
 
-    wikidata.run(query, {properties}, (err, result) => {
+    const options = JSON.parse(JSON.stringify(this.options))
+    options.properties = properties
+    wikidata.run(query, options, (err, result) => {
       if (err) { return callback(err) }
 
       let template
