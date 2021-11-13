@@ -1,6 +1,8 @@
 # wikipedia-list-extractor
 Wikipedia has lists of objects (e.g. monuments), often referenced by governmental data (e.g. heritage protection). This module helps to extract data from these lists.
 
+Example: The sub-pages of [https://de.wikipedia.org/wiki/Denkmalgesch%C3%BCtzte_Objekte_in_%C3%96sterreich](Denkmalgeschützte Objekte in Österreich) will list all heritage protected objects in Austria. This module will return individual items of this list as JSON objects. The ID within this module for this list is 'AT-BDA'. The items can be referenced either by their ID (e.g. 'id-24536') or their Wikidata-ID (e.g. 'Q1534177') or their page plus index (e.g. 'Liste der denkmalgeschützten Objekte in Wien/Innere Stadt/E–He#69').
+
 In `data/` there are config files for each type of list.
 
 # Usage
