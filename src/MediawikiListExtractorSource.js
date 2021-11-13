@@ -21,7 +21,7 @@ class MediawikiListExtractorSource {
     this.options = options
   }
 
-  cacheClear (id=null) {
+  cacheClear (id = null) {
     if (id === null) {
       this.cache = {}
       this.aliases = {}
@@ -102,7 +102,7 @@ class MediawikiListExtractorSource {
         if (this.param.renderedAnchorField) {
           url += '#' + item[this.param.renderedAnchorField]
         } else if (this.param.renderedAnchorTemplate) {
-          let anchor = anchorTemplate.render({ item, page, index })
+          const anchor = anchorTemplate.render({ item, page, index })
           if (anchor) {
             url += '#' + anchor
           }
@@ -244,12 +244,11 @@ class MediawikiListExtractorSource {
             if (this.param.rawAnchorField) {
               url += '#' + raw[this.param.rawAnchorField]
             } else if (this.param.rawAnchorTemplate) {
-              let anchor = anchorTemplate.render({ item: raw, page, index })
+              const anchor = anchorTemplate.render({ item: raw, page, index })
               if (anchor) {
                 url += '#' + anchor
               }
             }
-
 
             if (id in this.cache) {
               this.cache[id].raw = raw
@@ -306,7 +305,7 @@ class MediawikiListExtractorSource {
       properties.push(field.property)
     )
 
-    let query = 'SELECT ?item ' + properties.map(p => '?' + p).join(' ') + ' ' +
+    const query = 'SELECT ?item ' + properties.map(p => '?' + p).join(' ') + ' ' +
       'WHERE { ' + properties.map(p => '?item wdt:' + p + ' ?' + p + '.').join('\n') +
       'VALUES ?item {' + wikidataIds.map(id => 'wd:' + id).join(' ') + '}.}'
 
@@ -327,7 +326,7 @@ class MediawikiListExtractorSource {
         item.wikidata = qitem
 
         if (template) {
-          let ids = template.render({item: qitem}).split(/\n/g).filter(id => id)
+          const ids = template.render({ item: qitem }).split(/\n/g).filter(id => id)
 
           this.addAliases(item, ids)
         }
@@ -348,7 +347,7 @@ class MediawikiListExtractorSource {
   getPageItems (page, options, callback) {
     // illegal page title -> ignore
     if (this.param.pageTitleMatch) {
-      let re = new RegExp(this.param.pageTitleMatch)
+      const re = new RegExp(this.param.pageTitleMatch)
       if (!page.match(re)) {
         return callback(null, [])
       }

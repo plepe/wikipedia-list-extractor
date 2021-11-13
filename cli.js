@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-const fs = require('fs')
-
 require('./node')
 
 const MediawikiListExtractor = require('./src/MediawikiListExtractor.js')

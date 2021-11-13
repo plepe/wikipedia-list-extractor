@@ -24,7 +24,7 @@ module.exports = function proxy (param, callback) {
 
   // console.log('> ' + url)
 
-  fetch(url, {headers})
+  fetch(url, { headers })
     .then(res => res.text())
     .then(body => callback(null, body))
 }

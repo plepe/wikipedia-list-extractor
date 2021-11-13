@@ -65,7 +65,7 @@ class MediawikiListExtractor {
    * Clear either the whole cache or the cache for a specific item
    * @param {string} [id] - The id (or an alias) of the item to be cleared.
    */
-  cacheClear (id=null) {
+  cacheClear (id = null) {
     if (this.preInitRequests !== null) {
       return this.preInitRequests.push({ fun: 'cacheClear', arguments })
     }

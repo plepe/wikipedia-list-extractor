@@ -10,15 +10,15 @@ const findWikidataItems = require('find-wikidata-items')
 
 module.exports = function (source, ids, options, callback) {
   let idFields = { '': ids }
-  let wikidataMapQueries = []
-  let pages = []
-  let queries = []
+  const wikidataMapQueries = []
+  const pages = []
+  const queries = []
 
   if (source.idToQuery) {
     const template = Twig.twig({ data: source.idToQuery, async: false })
     idFields = {}
     ids.forEach(id => {
-      let query = parseIdToQuery(template.render({ id }))
+      const query = parseIdToQuery(template.render({ id }))
       queries.push(query)
 
       if (query.field && query.value) {
@@ -27,13 +27,11 @@ module.exports = function (source, ids, options, callback) {
         } else {
           idFields[query.field] = [query.value]
         }
-      }
-      else if (query.field && query.wikidataValue && query.wikidataProperty) {
-        let q = {}
+      } else if (query.field && query.wikidataValue && query.wikidataProperty) {
+        const q = {}
         q[query.wikidataProperty] = query.wikidataValue
         wikidataMapQueries.push(q)
-      }
-      else if (query.page) {
+      } else if (query.page) {
         pages.push(query.page)
       }
     })
@@ -115,7 +113,7 @@ function findPageForIds (source, idField, ids, options, callback) {
   }
 
   if (idField && source.template) {
-    search += 'insource:/\| *' + idField + ' *= *(' + ids.map(id => regexpEscape(id)).join('|') + ')[^0-9]/ '
+    search += 'insource:/| *' + idField + ' *= *(' + ids.map(id => regexpEscape(id)).join('|') + ')[^0-9]/ '
   } else if (source.searchIdPrefix || source.searchIdSuffix) {
     search += 'insource:/' + (source.searchIdPrefix || '') + '(' + ids.map(id => regexpEscape(id)).join('|') + ')' + (source.searchIdSuffix || ' *\\|') + '/ '
   }
