@@ -54,14 +54,14 @@ module.exports = function (source, ids, options, callback) {
   findWikidataItems(wikidataMapQueries, _options, (err, result) => {
     if (err) { return callback(err) }
 
-    Object.keys(result).forEach((r, index) => {
+    result.forEach((r, index) => {
       const query = queries[index]
 
       if (!(query.field in idFields)) {
         idFields[query.field] = []
       }
 
-      idFields[query.field].push(r[0])
+      idFields[query.field].push(Object.keys(r)[0])
     })
 
     part2(source, idFields, pages, options, callback)
