@@ -25,7 +25,7 @@ module.exports = function loadExtractor (id, def, callback = null) {
   }
 
   extractors[id] = new MediawikiListExtractor(id, null, {
-    path: path.join(__dirname, '../data/' + id + '.yaml')
+    path: path.join(__dirname, '../data')
   })
   callback(null, extractors[id])
 }
