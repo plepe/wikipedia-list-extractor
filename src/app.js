@@ -1,25 +1,37 @@
 const yaml = require('yaml')
-const MediawikiListExtractor = require('./MediawikiListExtractor.js')
+const MediawikiListExtractor = require('./MediawikiListExtractor')
+const MediawikiListExtractorClient = require('./MediawikiListExtractorClient')
 const escHtml = require('html-escaper').escape
 
 const options = {
   proxy: 'proxy/?'
 }
 
-const extractors = {}
+const extractors = {
+  server: {},
+  browser: {}
+}
 
-function loadExtractor (id, callback) {
-  if (extractors[id]) {
-    return callback(null, extractors[id])
+function loadExtractor (method, id, callback) {
+  if (extractors[method][id]) {
+    return callback(null, extractors[method][id])
   }
 
-  global.fetch('data/' + id + '.yaml')
-    .then(res => res.text())
-    .then(def => {
-      def = yaml.parse(def)
-      extractors[id] = new MediawikiListExtractor(id, def, options)
-      callback(null, extractors[id])
-    })
+  if (method === 'server') { // run on server (we are client)
+    const options = {
+      serverUrl: '.'
+    }
+    extractors[method][id] = new MediawikiListExtractorClient(id, options)
+    callback(null, extractors[method][id])
+  } else {
+    global.fetch('data/' + id + '.yaml')
+      .then(res => res.text())
+      .then(def => {
+        def = yaml.parse(def)
+        extractors[method][id] = new MediawikiListExtractor(id, def, options)
+        callback(null, extractors[method][id])
+      })
+  }
 }
 
 window.onload = () => {
@@ -45,7 +57,7 @@ window.onload = () => {
 
   const f = document.getElementsByTagName('form')[0]
   f.onsubmit = () => {
-    loadExtractor(f.elements.list.value, (err, extractor) => {
+    loadExtractor(f.elements.method.value, f.elements.list.value, (err, extractor) => {
       if (err) { return global.alert(err) }
 
       const ids = f.elements.ids.value
