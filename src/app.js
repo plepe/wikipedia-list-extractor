@@ -1,9 +1,9 @@
-const yaml = require('yaml')
 const MediawikiListExtractor = require('./MediawikiListExtractor')
 const MediawikiListExtractorClient = require('./MediawikiListExtractorClient')
 const escHtml = require('html-escaper').escape
 
 const options = {
+  path: 'data',
   proxy: 'proxy/?'
 }
 
@@ -24,13 +24,8 @@ function loadExtractor (method, id, callback) {
     extractors[method][id] = new MediawikiListExtractorClient(id, options)
     callback(null, extractors[method][id])
   } else {
-    global.fetch('data/' + id + '.yaml')
-      .then(res => res.text())
-      .then(def => {
-        def = yaml.parse(def)
-        extractors[method][id] = new MediawikiListExtractor(id, def, options)
-        callback(null, extractors[method][id])
-      })
+    extractors[method][id] = new MediawikiListExtractor(id, null, options)
+    callback(null, extractors[method][id])
   }
 }
 

@@ -1,20 +1,64 @@
+const fs = require('fs')
+const path = require('path')
+const yaml = require('yaml')
 const async = {
   map: require('async/map')
 }
 
 const MediawikiListExtractorSource = require('./MediawikiListExtractorSource')
 
+const defaultOptions = {
+  path: path.join(__dirname, '../data')
+}
+
 class MediawikiListExtractor {
   constructor (id, def, options = {}) {
     this.id = id
     this.def = def
-    this.options = options
-
-    if (Array.isArray(this.def.param)) {
-      this.sources = this.def.param.map(param => new MediawikiListExtractorSource(id, param, options))
-    } else {
-      this.sources = [new MediawikiListExtractorSource(id, this.def.param, options)]
+    this.options = defaultOptions
+    for (const k in options) {
+      this.options[k] = options[k]
     }
+    this.preInitRequests = []
+
+    if (def) {
+      return this._init()
+    }
+
+    if (Object.keys(fs).length) { // when running in NodeJS environment
+      def = fs.readFile(
+        this.options.path + '/' + this.id + '.yaml',
+        (err, def) => {
+          if (err) {
+            return console.error(err)
+          }
+          this.def = yaml.parse(def.toString())
+          this._init()
+        }
+      )
+    } else { // running in browser
+      global.fetch(this.options.path + '/' + this.id + '.yaml')
+        .then(res => res.text())
+        .then(def => {
+          this.def = yaml.parse(def)
+          this._init()
+        })
+        .catch(err => {
+          global.setTimeout(() => console.error(err), 0)
+        })
+    }
+  }
+
+  _init () {
+    if (Array.isArray(this.def.param)) {
+      this.sources = this.def.param.map(param => new MediawikiListExtractorSource(this.id, param, this.options))
+    } else {
+      this.sources = [new MediawikiListExtractorSource(this.id, this.def.param, this.options)]
+    }
+
+    const todo = this.preInitRequests
+    this.preInitRequests = null
+    todo.forEach(req => this[req.fun].apply(this, req.arguments))
   }
 
   /**
@@ -22,6 +66,10 @@ class MediawikiListExtractor {
    * @param {string} [id] - The id (or an alias) of the item to be cleared.
    */
   cacheClear (id=null) {
+    if (this.preInitRequests !== null) {
+      return this.preInitRequests.push({ fun: 'cacheClear', arguments })
+    }
+
     this.sources.forEach(source => source.cacheClear(id))
   }
 
@@ -34,6 +82,10 @@ class MediawikiListExtractor {
    * @param {function} callback - Callback function which will be called with (err, result), where result is an unordered array of all items.
    */
   getPageItems (page, options, callback) {
+    if (this.preInitRequests !== null) {
+      return this.preInitRequests.push({ fun: 'getPageItems', arguments })
+    }
+
     if (typeof options === 'function') {
       callback = options
       options = {}
@@ -55,6 +107,10 @@ class MediawikiListExtractor {
    * @param {function} callback - Callback function which will be called with (err, result), where result is an unordered array of all items.
    */
   get (ids, options, callback) {
+    if (this.preInitRequests !== null) {
+      return this.preInitRequests.push({ fun: 'get', arguments })
+    }
+
     if (typeof options === 'function') {
       callback = options
       options = {}

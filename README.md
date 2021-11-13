@@ -30,7 +30,9 @@ curl http://localhost:8080/api/INT-UNESCO-de/91,80
 Wikipedia List Extractor uses a few modules (node-fetch, jsdom) as indirect dependencies (so they don't get compiled when using browserify). These have to be exposed as global variables. This can be done by requiring `wikipedia-list-extractor/node`.
 
 ```js
-let extractor = new MediawikiListExtractor('INT-UNESCO-de', def)
+let extractor = new MediawikiListExtractor('INT-UNESCO-de', null, {
+  path: 'node_modules/wikipedia-list-extractor/data',
+})
 extractor.get(['91', '80'], (err, result) => {
   console.log(err, JSON.stringify(result, null, '  '))
 })
@@ -53,7 +55,8 @@ As Wikipedia does not allow requests from a web browser, when they do not origin
 
 ```js
 // def is the file data/INT-UNESCO.json as Javascript Object
-let extractor = new MediawikiListExtractor('INT-UNESCO', def, {
+let extractor = new MediawikiListExtractor('INT-UNESCO', null, {
+  path: 'node_modules/wikipedia-list-extractor/data',
   proxy: 'proxy/?'
 })
 extractor.get(['91', '80'], (err, result) => {
