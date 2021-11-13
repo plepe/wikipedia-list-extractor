@@ -46,7 +46,12 @@ module.exports = function (source, ids, options, callback) {
     return part2(source, idFields, pages, options, callback)
   }
 
-  findWikidataItems(wikidataMapQueries, (err, result) => {
+  const _options = JSON.parse(JSON.stringify(options))
+  if (options.proxy) {
+    _options.url = options.proxy + 'source=' + encodeURIComponent('https://query.wikidata.org') + '&query='
+  }
+
+  findWikidataItems(wikidataMapQueries, _options, (err, result) => {
     if (err) { return callback(err) }
 
     Object.keys(result).forEach((r, index) => {
