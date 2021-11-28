@@ -17,10 +17,10 @@
   "dependencies": {
     "argparse": "^1.0.10",
     "array.prototype.flat": "^1.2.5",
-    "async": "^3.2.1",
-    "find-wikidata-items": "git+https://github.com/plepe/find-wikidata-items.git",
+    "async": "^3.2.2",
+    "find-wikidata-items": "^0.2.0",
     "jsdom": "^16.4.0",
-    "node-fetch": "^2.6.5",
+    "node-fetch": "^2.6.6",
     "parse-mediawiki-template": "^0.1.0",
     "twig": "^1.15.4",
     "yaml": "^1.10.2"
