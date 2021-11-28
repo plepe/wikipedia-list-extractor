@@ -3,6 +3,9 @@
 const fs = require('fs')
 const assert = require('assert').strict
 
+// compatibilty NodeJS < 11.0
+require('../node')
+
 const FakeServer = require('./src/FakeServer')
 const findPagesForIds = require('../src/findPagesForIds')
 

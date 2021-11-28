@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "argparse": "^1.0.10",
+    "array.prototype.flat": "^1.2.5",
     "async": "^3.2.1",
     "find-wikidata-items": "git+https://github.com/plepe/find-wikidata-items.git",
     "jsdom": "^16.4.0",
