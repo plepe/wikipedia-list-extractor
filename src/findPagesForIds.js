@@ -71,6 +71,10 @@ function part2 (source, idFields, pages, options, callback) {
     return callback(null, [])
   }
 
+  if (Object.keys(idFields).length === 1 && Object.keys(idFields)[0] === '') {
+    return callback(null, '*')
+  }
+
   // if 'template' is an array, query all templates and merge results together
   if (source.template && Array.isArray(source.template)) {
     return async.map(

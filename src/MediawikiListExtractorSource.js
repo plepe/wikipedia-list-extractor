@@ -457,7 +457,9 @@ class MediawikiListExtractorSource {
     fun(this.param, ids, this.options, (err, pages, mapping) => {
       if (err) { return callback(err) }
 
-      if (!pages.length) {
+      if (pages === '*') {
+        pages = this.param.pages || []
+      } else if (!pages.length) {
         return callback(null, result)
       }
 
