@@ -1,0 +1,58 @@
+title:
+  de: Wiener Wienflussbrücken
+param:
+  source: https://de.wikipedia.org
+  pages:
+    - Wiener Wienflussbrücken
+  renderedIdField: Id
+  renderedFields:
+    Id:
+      parse: "{% if row|length > 2 %}{{ index }}{% endif %}"
+    Name:
+      column: 0
+      modify: "{{ value|striptags }}"
+    Artikel:
+      column: 0
+      domQuery: a
+      domAttribute: href
+    Bauform:
+      column: 1
+      modify: |
+        {{ value|split('<br>')[0] }}
+    Breitengrad:
+      column: 1
+      modify: |
+        {{ value|match('params=([0-9.]+)_N_([0-9.]+_E_)')[1] }}
+    Längengrad:
+      column: 1
+      modify: |
+        {{ value|match('params=([0-9.]+)_N_([0-9.]+)_E_')[2] }}
+    Baujahr:
+      column: 2
+      modify: |
+        {% set m = value|match('^([0-9]+)(<br>\(.*\))$') %}
+        {% if m %}
+        {{ m[1] }}
+        {% else %}
+        {{ value }}
+        {% endif %}
+    BrückeSeit:
+      column: 2
+      modify: |
+        {% set m = value|match('^([0-9]+)(<br>\((.*)\))$') %}
+        {% if m %}
+        {{ m[3] }}
+        {% endif %}
+    Beschreibung:
+      column: 3
+    FotoData:
+      column: 4
+      type: image
+    Foto:
+      column: 4
+      type: image
+      modify: |
+        {% if value %}
+        File:{{ value.id }}
+        {% endif %}
+      
