@@ -82,7 +82,7 @@ module.exports = function parseProcessedPage (def, body, page) {
 
       if (fieldDef.type === 'image') {
         let imgs = td.getElementsByTagName('img')
-        imgs = Array.from(imgs).filter(img => img.width > 64 && img.height > 64)
+        imgs = Array.from(imgs).filter(img => img.width > 64 || img.height > 64)
         if (imgs.length) {
           value = wikipediaGetImageProperties(imgs[0])
         }
