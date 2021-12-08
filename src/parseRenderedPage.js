@@ -55,8 +55,23 @@ module.exports = function parseProcessedPage (def, body) {
     }
     */
 
+    const row = Array.from(tr.cells).map(td => {
+      updateLinks(td, def.source)
+      return td.innerHTML
+    })
+
     Object.keys(def.renderedFields).forEach(fieldId => {
       const fieldDef = def.renderedFields[fieldId]
+
+      if (fieldDef.parse) {
+        const template = twigTemplates(fieldDef.parse)
+        const value = template.render({ row }).trim()
+        if (value !== '') {
+          item[fieldId] = value
+        }
+
+        return
+      }
 
       const td = tr.cells[fieldDef.column]
       if (!td) {
@@ -119,7 +134,7 @@ module.exports = function parseProcessedPage (def, body) {
 
       if (fieldDef.modify) {
         const template = twigTemplates(fieldDef.modify)
-        value = template.render({ value }).trim()
+        value = template.render({ value, row }).trim()
       }
 
       if (value) {
