@@ -98,9 +98,9 @@ module.exports = function parseProcessedPage (def, body, page) {
         }
 
         if (fieldDef.domAttribute) {
-          value = dom.getAttribute(fieldDef.domAttribute)
+          value = dom.getAttribute(fieldDef.domAttribute).trim()
         } else {
-          value = dom.innerHTML
+          value = dom.innerHTML.trim()
         }
 
         if (fieldDef.replaceOld && fieldDef.replaceNew) {
