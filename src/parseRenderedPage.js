@@ -1,5 +1,6 @@
 const updateLinks = require('./updateLinks.js')
 const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
+const twigTemplates = require('./twigTemplates.js')
 
 module.exports = function parseProcessedPage (def, body) {
   const result = []
@@ -114,6 +115,11 @@ module.exports = function parseProcessedPage (def, body) {
 
           value = m[1].trim()
         }
+      }
+
+      if (fieldDef.modify) {
+        const template = twigTemplates(fieldDef.modify)
+        value = template.render({ value }).trim()
       }
 
       if (value) {
