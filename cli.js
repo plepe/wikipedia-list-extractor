@@ -35,8 +35,14 @@ if (args.page) {
 
     console.log(JSON.stringify(result, null, '    '))
   })
-} else {
+} else if (args.id.length) {
   list.get(args.id, (err, result) => {
+    if (err) { return console.error(err) }
+
+    console.log(JSON.stringify(result, null, '    '))
+  })
+} else {
+  list.getAll((err, result) => {
     if (err) { return console.error(err) }
 
     console.log(JSON.stringify(result, null, '    '))

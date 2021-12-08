@@ -74,6 +74,30 @@ class MediawikiListExtractor {
   }
 
   /**
+   * Load all possible items (param needs a 'pages' property, with a list of all pages)
+   * @param {object} options - Options
+   * @param {boolean} [options.loadRendered=true] - load rendered data
+   * @param {boolean} [options.loadRaw=true] - load raw data
+   * @param {function} callback - Callback function which will be called with (err, result), where result is an unordered array of all items.
+   */
+  getAll (options, callback) {
+    if (this.preInitRequests !== null) {
+      return this.preInitRequests.push({ fun: 'getAll', arguments })
+    }
+
+    if (typeof options === 'function') {
+      callback = options
+      options = {}
+    }
+
+    async.map(
+      this.sources,
+      (source, done) => source.getAll(options, done),
+      (err, list) => callback(err, list ? list.flat() : null)
+    )
+  }
+
+  /**
    * Load all items on the specified wikipedia page
    * @param {string} page - Title of the page
    * @param {object} options - Options

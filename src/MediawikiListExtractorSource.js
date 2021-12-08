@@ -2,6 +2,7 @@ const Twig = require('twig')
 const parseMediawikiTemplate = require('parse-mediawiki-template')
 const async = {
   eachSeries: require('async/eachSeries'),
+  map: require('async/map'),
   parallel: require('async/parallel'),
   setImmediate: require('async/setImmediate')
 }
@@ -334,6 +335,20 @@ class MediawikiListExtractorSource {
 
       callback(null, items)
     })
+  }
+
+  getAll (options, callback) {
+    if (!this.param.pages) {
+      return callback(null, [])
+    }
+
+    async.map(this.param.pages,
+      (page, done) => this.getPageItems(page, options, done),
+      (err, result) => {
+        if (err) { return callback(err) }
+        callback(null, result.flat())
+      }
+    )
   }
 
   /**
