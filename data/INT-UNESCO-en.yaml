@@ -9,11 +9,43 @@ param:
   searchIdPrefix: url=https:\/\/whc.unesco.org\/en\/list\/
   pageTitleMatch: List of World Heritage Sites in
   renderedTableClass: wikitable
-  renderedIdInCiteURL: ^https://whc.unesco.org/en/list/(.*)$
+  renderedIdField: id
   renderedFields:
+    id:
+      column: 4
+      modify: |
+        {% set m = value|match('^[0-9]+') %}
+        {% if m %}
+          {{ m[0] }}
+        {% else %}
+          {{ page }}-{{ index }}
+        {% endif %}
+    title:
+      column: 0
+      modify: "{{ value|striptags }}"
+    link:
+      column: 0
+      domQuery: a
+      domAttribute: href
+    location:
+      column: 2
+      modify: "{{ value|striptags }}"
+    locationLink:
+      column: 2
+      domQuery: a
+      domAttribute: href
+    listYear:
+      column: 3
+    imageData:
+      column: 1
+      type: image
     image:
       column: 1
       type: image
+      modify: |
+        {% if value %}
+        File:{{ value.id }}
+        {% endif %}
     description:
       column: 5
       type: html
