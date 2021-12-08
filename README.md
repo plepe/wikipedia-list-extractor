@@ -109,7 +109,7 @@ For sources, the following options are possible
 | rawAnchorField | The HTML anchor of the item can be read from this field (in the template in page source). |
 | rawWikidataField | The wikidata id of the item can be read from this field (in the template in page source). |
 | renderedTableClass | In rendered output, the table in the page can be detected from this class. |
-| renderedIdField | The id of the item can be read from this field (in the rendered output, see renderedFields). |
+| renderedIdField | The id of the item can be read from this field (in the rendered output, see renderedFields). If the id is empty ('', null, ...), the item will be ignored. |
 | renderedAnchorField | The HTML anchor of the item can be read from this field (in the rendered output, see renderedFields). |
 | renderedWikidataField | The wikidata id of the item can be read from this field (in the rendered output, see renderedFields). |
 | renderedFields | Hashed array of fields, see below. |
@@ -120,6 +120,7 @@ Advanced Fields:
 
 | Field | Description                                |
 | ----- | ------------------------------------------ |
+| pages | List of pages which constitutes the whole dataset (e.g. for getAll, which returns all items).
 | rawAnchorTemplate | Complex HTML anchor for the item. Uses Twig syntax to compile the anchor. Available parameters: `item.field` (with each field from the template), `page` (page title), `index` (index of the item on this page). |
 | rawIdTemplate | More complex ID and aliases for the item. Uses Twig syntax to compile the ID/Aliases (one alias per line). Make sure that the first result is always the same as the first ID in `renderedIdTemplate`. Available parameters: `item.field` (with all fields from the template), `page` (page title), `index` (index of the item on this page). |
 | renderedAnchorTemplate | Complex HTML anchor for the item. Uses Twig syntax to compile the anchor. Available parameters: `item.field` (with each field from the template), `page` (page title), `index` (index of the item on this page). |
@@ -132,5 +133,8 @@ Rendered Fields Parameter:
 | Parameter | Description                                |
 | ----- | ------------------------------------------ |
 | column | Table column |
-| regexp | A regular expression, where the first match is the resulting value (to exclude patterns, use: `/foo(?:bar)(bla)/` -> "bla". |
 | type | 'html' (default), 'image' (parse url, width, height from first image in this field) |
+| domQuery | CSS style query for a DOM node in the cell.
+| domAttribute | Use the value of the DOM node (or the cell, if domQuery was not specified).
+| regexp | A regular expression, where the first match is the resulting value (to exclude patterns, use: `/foo(?:bar)(bla)/` -> "bla". |
+| modify | A TwigJS template, which can modify value. The following parameters are available: `value` (if `column` was specified; the result after column, domQuery, domAttribute, regexp), `row` (the full table row as array), `index` (the n'th item on this page), `page` (the name of the Wikipedia page).
