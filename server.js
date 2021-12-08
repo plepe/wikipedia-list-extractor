@@ -55,11 +55,9 @@ function requestListener (req, res) {
       }
 
       const text = '<ul>' +
-        files.map(file => {
-          if (file.match(/./)) {
-            return '<li><a href="' + file + '">' + file + '</a></li>'
-          }
-        }).join('') +
+        files
+          .map(file => file.match(/./) ? '<li><a href="' + file + '">' + file + '</a></li>' : '')
+          .join('') +
         '</ul>'
 
       res.setHeader('Content-Type', 'text/html')
