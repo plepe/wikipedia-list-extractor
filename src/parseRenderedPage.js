@@ -2,7 +2,7 @@ const updateLinks = require('./updateLinks.js')
 const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
 const twigTemplates = require('./twigTemplates.js')
 
-module.exports = function parseProcessedPage (def, body) {
+module.exports = function parseProcessedPage (def, body, page) {
   const result = []
 
   const dom = global.document.createElement('div')
@@ -28,7 +28,7 @@ module.exports = function parseProcessedPage (def, body) {
   const trs = Array.from(table.rows)
   trs.splice(0, 1) // ignore header row
 
-  trs.forEach(tr => {
+  trs.forEach((tr, index) => {
     const item = {}
 
     /*
@@ -65,7 +65,7 @@ module.exports = function parseProcessedPage (def, body) {
 
       if (fieldDef.parse) {
         const template = twigTemplates(fieldDef.parse)
-        const value = template.render({ row }).trim()
+        const value = template.render({ row, index, page }).trim()
         if (value !== '') {
           item[fieldId] = value
         }
@@ -134,7 +134,7 @@ module.exports = function parseProcessedPage (def, body) {
 
       if (fieldDef.modify) {
         const template = twigTemplates(fieldDef.modify)
-        value = template.render({ value, row }).trim()
+        value = template.render({ value, row, index, page }).trim()
       }
 
       if (value) {

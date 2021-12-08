@@ -78,7 +78,7 @@ class MediawikiListExtractorSource {
       this.pageCache[page] = {}
     }
 
-    const items = parseRenderedPage(this.param, body)
+    const items = parseRenderedPage(this.param, body, page)
 
     this.pageCache[page].rendered = []
 
