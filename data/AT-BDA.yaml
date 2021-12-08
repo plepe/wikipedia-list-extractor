@@ -59,8 +59,11 @@ param:
       type: html
       domQuery: a
       domAttribute: href
-      1replaceOld: /<a href="https://commons.wikimedia.org/wiki/Category:([^"]*)".*/m
-      replaceNew: $1
+      modify: |
+        {% if value starts with 'https://commons.wikimedia.org/wiki/special:uploadWizard' %}
+        {% else %}
+        {{ value|replace({ 'https://commons.wikimedia.org/wiki/': '', '_': ' ' })|url_decode }}
+        {% endif %}
     image:
       column: 0
       type: image
