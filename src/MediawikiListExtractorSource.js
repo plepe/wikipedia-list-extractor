@@ -158,7 +158,9 @@ class MediawikiListExtractorSource {
       for (const wdId in r) {
         const id = r[wdId].idProp.values[0]
 
-        result[id] = wdMapping[wdId]
+        if (id) {
+          result[id] = wdMapping[wdId]
+        }
       }
 
       callback(null, result)
@@ -170,7 +172,9 @@ class MediawikiListExtractorSource {
     const field = this.param[prefix + 'IdField']
 
     items.forEach(item => {
-      result[item[field]] = item
+      if (item[field]) {
+        result[item[field]] = item
+      }
     })
 
     callback(null, result)
