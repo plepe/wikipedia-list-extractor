@@ -63,11 +63,14 @@ module.exports = function parseProcessedPage (def, body, page) {
     Object.keys(def.renderedFields).forEach(fieldId => {
       const fieldDef = def.renderedFields[fieldId]
 
-      if (fieldDef.parse) {
-        const template = twigTemplates(fieldDef.parse)
-        const value = template.render({ row, index, page }).trim()
-        if (value !== '') {
-          item[fieldId] = value
+      if (!('column' in fieldDef)) {
+        if (fieldDef.modify) {
+          const template = twigTemplates(fieldDef.modify)
+          const value = template.render({ row, index, page }).trim()
+
+          if (value !== '') {
+            item[fieldId] = value
+          }
         }
 
         return

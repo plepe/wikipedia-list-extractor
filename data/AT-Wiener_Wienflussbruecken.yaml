@@ -7,7 +7,7 @@ param:
   renderedIdField: Id
   renderedFields:
     Id:
-      parse: "{% if row|length > 2 %}{{ index }}{% endif %}"
+      modify: "{% if row|length > 2 %}{{ index }}{% endif %}"
     Name:
       column: 0
       modify: "{{ value|striptags }}"
