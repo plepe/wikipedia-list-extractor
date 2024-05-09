@@ -15,6 +15,10 @@
     "test": "mocha --bail",
     "watch": "watchify --debug src/app.js -p esmify -o dist/app.js -v"
   },
+  "files": [
+    "dist/app.js",
+    "src"
+  ],
   "dependencies": {
     "argparse": "^1.0.10",
     "array.prototype.flat": "^1.2.5",
