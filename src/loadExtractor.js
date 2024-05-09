@@ -1,6 +1,6 @@
-const path = require('path')
+import path from 'path'
 
-const MediawikiListExtractor = require('./MediawikiListExtractor.js')
+import MediawikiListExtractor from './MediawikiListExtractor.js'
 
 const extractors = {}
 
@@ -9,7 +9,7 @@ const extractors = {}
  * @param {object} [def] - override definition; if not, load from file
  * @param {function} callback - return the loaded extractor: (err, extractor)
  */
-module.exports = function loadExtractor (id, def, callback = null) {
+function loadExtractor (id, def, callback = null) {
   if (typeof def === 'function') {
     callback = def
     def = null
@@ -29,3 +29,5 @@ module.exports = function loadExtractor (id, def, callback = null) {
   })
   callback(null, extractors[id])
 }
+
+export default loadExtractor

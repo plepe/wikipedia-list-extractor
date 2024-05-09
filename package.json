@@ -3,6 +3,7 @@
   "description": "Read entries from Wikipedia lists",
   "version": "0.3.0",
   "main": "src/index.js",
+  "type": "module",
   "repository": "https://github.com/plepe/wikipedia-list-extractor",
   "author": "Stephan Bösch-Plepelits <skunk@xover.mud.at>",
   "license": "MIT",
@@ -21,7 +22,7 @@
     "find-wikidata-items": "^0.2.0",
     "jsdom": "^16.4.0",
     "node-fetch": "^2.6.6",
-    "parse-mediawiki-template": "^0.1.0",
+    "parse-mediawiki-template": "^0.2.0",
     "twig": "^1.15.4",
     "yaml": "^1.10.2"
   },

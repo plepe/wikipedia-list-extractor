@@ -1,10 +1,10 @@
 /* global describe, it */
-require('../node')
+import '../node.js'
 
-const assert = require('assert').strict
-const fs = require('fs')
+import { strict as assert } from 'assert'
+import fs from 'fs'
 
-const wikidata = require('../src/wikidata')
+import wikidata from '../src/wikidata.js'
 
 describe('wikidata', function () {
   it('P9154=108784', function (done) {

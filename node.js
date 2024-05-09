@@ -1,8 +1,6 @@
-// compatibilty NodeJS < 11.0
-require('array.prototype.flat').shim()
-
-global.fetch = require('node-fetch')
-const jsdom = require('jsdom')
+import fetch from 'node-fetch'
+global.fetch = fetch
+import jsdom from 'jsdom'
 const { JSDOM } = jsdom
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>')
 global.document = dom.window.document

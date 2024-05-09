@@ -1,6 +1,6 @@
-const wikidata = require('./wikidata')
+import wikidata from './wikidata.js'
 
-module.exports = function findPageForIdsWikidata (source, ids, options, callback) {
+function findPagesForIdsWikidata (source, ids, options, callback) {
   const idProp = source.wikidataIdProperty
   const listProp = source.wikidataListProperty
   let query = 'SELECT ?item ?idProp ?' + listProp + ' ?listUrl WHERE {?item wdt:' + idProp + ' "' + ids[0] + '".?item wdt:' + idProp + ' ?idProp.OPTIONAL{?item wdt:' + listProp + ' ?' + listProp + '.?listUrl schema:about ?' + listProp + '. ?listUrl schema:isPartOf <https://de.wikipedia.org/>.}}'
@@ -34,3 +34,5 @@ module.exports = function findPageForIdsWikidata (source, ids, options, callback
     }
   )
 }
+
+export default findPagesForIdsWikidata

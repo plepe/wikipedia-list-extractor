@@ -1,10 +1,10 @@
 /* global describe, it */
 
-const fs = require('fs')
-const assert = require('assert').strict
+import fs from 'fs'
+import { strict as assert } from 'assert'
 
-const FakeServer = require('./src/FakeServer')
-const MediawikiListExtractor = require('../src/MediawikiListExtractor')
+import FakeServer from './src/FakeServer.js'
+import MediawikiListExtractor from '../src/MediawikiListExtractor.js'
 
 const conf = JSON.parse(fs.readFileSync('test/conf.json'))
 const def = JSON.parse(fs.readFileSync('test/def.json'))

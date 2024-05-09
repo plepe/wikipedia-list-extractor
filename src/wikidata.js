@@ -137,7 +137,7 @@ function wikidataRun (str, options, callback) {
     })
 }
 
-module.exports = {
+export default {
   query: wikidataQuery,
   compile: wikidataCompile,
   run: wikidataRun

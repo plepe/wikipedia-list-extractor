@@ -1,8 +1,8 @@
-const queryString = require('query-string')
+import queryString from 'query-string'
 
-const loadExtractor = require('./loadExtractor')
+import loadExtractor from './loadExtractor.js'
 
-module.exports = function apiHandle (url, callback) {
+function apiHandle (url, callback) {
   const m = url.match(/^\/api\/([A-Z-]*)\/([^?]+)(\?.*|)$/i)
   if (m) {
     const listId = m[1]
@@ -18,3 +18,5 @@ module.exports = function apiHandle (url, callback) {
     })
   }
 }
+
+export default apiHandle

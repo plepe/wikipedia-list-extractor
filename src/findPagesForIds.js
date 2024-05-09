@@ -1,14 +1,11 @@
-const Twig = require('twig')
-const async = {
-  map: require('async/map'),
-  mapValues: require('async/mapValues')
-}
+import Twig from 'twig'
+import async from 'async'
+import findWikidataItems from 'find-wikidata-items'
 
-const regexpEscape = require('./regexpEscape')
-const parseIdToQuery = require('./parseIdToQuery')
-const findWikidataItems = require('find-wikidata-items')
+import regexpEscape from './regexpEscape.js'
+import parseIdToQuery from './parseIdToQuery.js'
 
-module.exports = function (source, ids, options, callback) {
+function findPagesForIds (source, ids, options, callback) {
   let idFields = { '': ids }
   const wikidataMapQueries = []
   const pages = []
@@ -146,3 +143,5 @@ function findPageForIds (source, idField, ids, options, callback) {
     }
     )
 }
+
+export default findPagesForIds

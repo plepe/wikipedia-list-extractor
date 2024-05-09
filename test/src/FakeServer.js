@@ -1,10 +1,10 @@
-const fs = require('fs')
-const http = require('http')
-const md5 = require('md5')
+import fs from 'fs'
+import http from 'http'
+import md5 from 'md5'
 
-const apiHandle = require('../../src/apiHandle')
+import apiHandle from '../../src/apiHandle.js'
 
-module.exports = class FakeServer {
+class FakeServer {
   constructor (conf) {
     this.conf = conf
   }
@@ -81,3 +81,5 @@ module.exports = class FakeServer {
     callback()
   }
 }
+
+export default FakeServer

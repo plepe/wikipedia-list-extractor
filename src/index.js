@@ -1,1 +1,2 @@
-module.exports = require('./MediawikiListExtractor.js')
+import MediawikiListExtractor from './MediawikiListExtractor.js'
+module.exports = MediawikiListExtractor

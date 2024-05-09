@@ -1,8 +1,8 @@
-const updateLinks = require('./updateLinks.js')
-const wikipediaGetImageProperties = require('./wikipediaGetImageProperties.js')
-const twigTemplates = require('./twigTemplates.js')
+import updateLinks from './updateLinks.js'
+import wikipediaGetImageProperties from './wikipediaGetImageProperties.js'
+import twigTemplates from './twigTemplates.js'
 
-module.exports = function parseProcessedPage (def, body, page) {
+function parseRenderedPage (def, body, page) {
   const result = []
 
   const dom = global.document.createElement('div')
@@ -150,3 +150,5 @@ module.exports = function parseProcessedPage (def, body, page) {
 
   return result
 }
+
+export default parseRenderedPage

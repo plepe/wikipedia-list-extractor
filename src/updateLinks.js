@@ -1,4 +1,4 @@
-module.exports = function updateLinks (dom, url) {
+function updateLinks (dom, url) {
   const as = dom.getElementsByTagName('a')
   Array.from(as).forEach(a => {
     if (!a.getAttribute('href').match(/^\w+:/)) {
@@ -6,3 +6,5 @@ module.exports = function updateLinks (dom, url) {
     }
   })
 }
+
+export default updateLinks

@@ -1,16 +1,10 @@
-const Twig = require('twig')
-const parseMediawikiTemplate = require('parse-mediawiki-template')
-const async = {
-  eachSeries: require('async/eachSeries'),
-  map: require('async/map'),
-  parallel: require('async/parallel'),
-  setImmediate: require('async/setImmediate')
-}
-
-const parseRenderedPage = require('./parseRenderedPage')
-const findPagesForIds = require('./findPagesForIds')
-const findPagesForIdsWikidata = require('./findPagesForIdsWikidata')
-const wikidata = require('./wikidata')
+import Twig from 'twig'
+import parseMediawikiTemplate from 'parse-mediawiki-template'
+import async from 'async'
+import parseRenderedPage from './parseRenderedPage.js'
+import findPagesForIds from './findPagesForIds.js'
+import findPagesForIdsWikidata from './findPagesForIdsWikidata.js'
+import wikidata from './wikidata.js'
 
 class MediawikiListExtractorSource {
   constructor (id, param, options = {}) {
@@ -494,4 +488,4 @@ class MediawikiListExtractorSource {
   }
 }
 
-module.exports = MediawikiListExtractorSource
+export default MediawikiListExtractorSource

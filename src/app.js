@@ -1,6 +1,7 @@
-const MediawikiListExtractor = require('./MediawikiListExtractor')
-const MediawikiListExtractorClient = require('./MediawikiListExtractorClient')
-const escHtml = require('html-escaper').escape
+import { escape as escHtml } from 'html-escaper'
+
+import MediawikiListExtractor from './MediawikiListExtractor.js'
+import MediawikiListExtractorClient from './MediawikiListExtractorClient.js'
 
 const options = {
   path: 'data',

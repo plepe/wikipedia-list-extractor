@@ -1,4 +1,4 @@
-module.exports = class MediawikiListExtractorClient {
+class MediawikiListExtractorClient {
   constructor (id, options = {}) {
     this.id = id
     this.options = options
@@ -40,3 +40,5 @@ module.exports = class MediawikiListExtractorClient {
   getPageItems (page, options, callback) {
   }
 }
+
+export default MediawikiListExtractorClient

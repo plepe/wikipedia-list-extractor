@@ -1,4 +1,4 @@
-module.exports = function (str) {
+function parseIdToQuery (str) {
   const rows = str.split(/\n/g)
   const result = {}
 
@@ -11,3 +11,5 @@ module.exports = function (str) {
 
   return result
 }
+
+export default parseIdToQuery

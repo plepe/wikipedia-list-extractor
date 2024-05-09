@@ -1,10 +1,10 @@
 /* global describe, it */
-require('../node')
+import '../node.js'
 
-const assert = require('assert').strict
-const fs = require('fs')
+import { strict as assert } from 'assert'
+import fs from 'fs'
 
-const parseRenderedPage = require('../src/parseRenderedPage')
+import parseRenderedPage from '../src/parseRenderedPage.js'
 
 const inputs = {
   Achau: fs.readFileSync('test/data/rendered/Achau.html')// .toString()

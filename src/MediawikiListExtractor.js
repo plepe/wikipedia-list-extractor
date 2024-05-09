@@ -1,11 +1,11 @@
-const fs = require('fs')
-const path = require('path')
-const yaml = require('yaml')
-const async = {
-  map: require('async/map')
-}
+import fs from 'fs'
+import path from 'path'
+import yaml from 'yaml'
+import async from 'async'
 
-const MediawikiListExtractorSource = require('./MediawikiListExtractorSource')
+import MediawikiListExtractorSource from './MediawikiListExtractorSource.js'
+
+const __dirname = path.resolve()
 
 const defaultOptions = {
   path: path.join(__dirname, '../data')
@@ -148,4 +148,4 @@ class MediawikiListExtractor {
   }
 }
 
-module.exports = MediawikiListExtractor
+export default MediawikiListExtractor

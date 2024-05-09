@@ -1,4 +1,4 @@
-const Twig = require('twig')
+import Twig from 'twig'
 
 Twig.extendFilter('url_decode', (value) => decodeURI(value))
 Twig.extendFilter('match', (value, param) => {
@@ -8,10 +8,12 @@ Twig.extendFilter('match', (value, param) => {
 
 const templates = {}
 
-module.exports = function twigTemplates (template) {
+function twigTemplates (template) {
   if (!(template in templates)) {
     templates[template] = Twig.twig({ data: template })
   }
 
   return templates[template]
 }
+
+export default twigTemplates
